@@ -1,11 +1,11 @@
-import { Button, Input } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../hooks/storeHooks";
 import { Mode } from "../../shared/types";
 
 const ConfigPage = () => {
-  const config = useAppSelector((state) => state.config);
   const navigate = useNavigate();
+  const config = useAppSelector((state) => state.config);
 
   const startAndForward = () => {
     window.mainAPI.startRun();

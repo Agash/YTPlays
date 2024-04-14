@@ -7,6 +7,7 @@ type ConfigState = {
   democracyCountdown: number;
   monarchyCooldown: number;
   normalInterval: number;
+  loaded: boolean;
 };
 
 const initialState: ConfigState = {
@@ -15,6 +16,7 @@ const initialState: ConfigState = {
   democracyCountdown: 5000,
   monarchyCooldown: 15000,
   normalInterval: 500,
+  loaded: false,
 };
 
 const configSlice = createSlice({

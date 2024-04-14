@@ -52,7 +52,10 @@ async function initializeStore() {
   });
 
   const initialConfig = await window.mainAPI.requestInitialData();
+  console.log("[YTPlays] Initial data: ", initialConfig);
   dispatch(loadConfig(initialConfig));
+
+  return true;
 }
 
 export { initializeStore };

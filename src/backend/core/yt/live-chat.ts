@@ -80,7 +80,7 @@ export class LiveChat {
   }
 
   stop() {
-    this.handler.exit();
+    this.handler?.exit();
     this.liveChat?.stop();
   }
 
@@ -162,6 +162,6 @@ export class LiveChat {
   }
 
   exit(): void {
-    this.handler.exit();
+    this.handler?.exit();
   }
 }

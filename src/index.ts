@@ -107,6 +107,7 @@ app.on("ready", async () => {
       democracyCountdown: store.get("settings.democracyCountdown"),
       monarchyCooldown: store.get("settings.monarchyCooldown"),
       normalInterval: store.get("settings.normalInterval"),
+      loaded: true,
     };
   });
 
@@ -158,7 +159,7 @@ app.on("ready", async () => {
 // explicitly with Cmd + Q.
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
-    chat.exit();
+    chat?.exit();
     app.quit();
   }
 });
