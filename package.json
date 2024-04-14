@@ -4,11 +4,12 @@
   "version": "1.0.0",
   "description": "My Electron application description",
   "main": ".webpack/main",
+  "repository": "https://github.com/Agash/YTPlays",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "publish": "electron-forge publish",
+    "publish": "set GITHUB_TOKEN=%GITHUB_YTPlays% && electron-forge publish",
     "lint": "eslint --ext .ts,.tsx ."
   },
   "devDependencies": {
@@ -20,6 +21,7 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.3.1",
     "@electron-forge/plugin-fuses": "^7.3.1",
     "@electron-forge/plugin-webpack": "^7.3.1",
+    "@electron-forge/publisher-github": "^7.4.0",
     "@electron/fuses": "^1.8.0",
     "@electron/rebuild": "^3.6.0",
     "@eslint/js": "^9.0.0",
@@ -64,6 +66,7 @@
     "react-redux": "^9.1.0",
     "redux": "^5.0.1",
     "robotjs": "^0.6.0",
+    "update-electron-app": "^3.0.0",
     "youtubei.js": "^9.2.1"
   }
 }

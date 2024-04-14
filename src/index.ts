@@ -4,6 +4,7 @@ import installExtension, {
   REACT_DEVELOPER_TOOLS,
   REDUX_DEVTOOLS,
 } from "electron-devtools-installer";
+import { updateElectronApp } from "update-electron-app";
 import { StoreType } from "./backend/core/typing";
 import { LiveChat } from "./backend/core/yt/live-chat";
 import { IPC } from "./shared/ipc-commands";
@@ -68,6 +69,8 @@ const chat = new LiveChat();
 if (require("electron-squirrel-startup")) {
   app.quit();
 }
+
+updateElectronApp();
 
 const createWindow = (): BrowserWindow => {
   // Create the browser window.
