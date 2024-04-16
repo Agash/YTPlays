@@ -23,8 +23,10 @@ const tapKey = (key: string) => {
   // keyTap(mapping.button);
 };
 
-const tapName = (pkmnName: string) => {
-  typeString(pkmnName);
+const typeName = (pkmnName: string) => {
+  console.log("[YTPlays] WRITING NAME: ", pkmnName);
+  if (app.isPackaged) typeString(pkmnName);
+  // typeString(pkmnName);
 };
 
 const getRandomChatInput = (): string => {
@@ -33,4 +35,4 @@ const getRandomChatInput = (): string => {
   return randomButton.input;
 };
 
-export { buttonMapping, isValidCommand, tapKey, tapName, getRandomChatInput };
+export { buttonMapping, isValidCommand, tapKey, typeName, getRandomChatInput };

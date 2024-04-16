@@ -1,8 +1,7 @@
-import { Button } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../hooks/storeHooks";
 import { Mode } from "../../shared/types";
-import { Form, Formik, FormikErrors, useFormik } from "formik";
+import { FormikErrors, useFormik } from "formik";
 
 const ConfigPage = () => {
   const navigate = useNavigate();

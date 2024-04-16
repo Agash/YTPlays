@@ -1,10 +1,11 @@
 import { ChatMessage, QueueStatistics } from "../../../shared/types";
 import { isValidCommand } from "../utils";
+import { IQueue } from "./queue";
 
 // Create a class for the filtered queue
-export class CommandQueue {
+export class CommandQueue implements IQueue {
   public statistics: QueueStatistics = new Map<string, number>();
-  private messages: ChatMessage[] = [];
+  public messages: ChatMessage[] = [];
 
   // Add a valid message to the queue
   enqueue(chatMsg: ChatMessage): void {
@@ -19,18 +20,6 @@ export class CommandQueue {
         `[YTPlays] Invalid command "${chatMsg.message}" received. Ignoring.`
       );
     }
-  }
-
-  // Retrieve the next message from the queue
-  dequeue(): ChatMessage | undefined {
-    const chatMsg = this.messages.shift();
-    if (!chatMsg) return;
-
-    this.statistics.set(
-      chatMsg.message,
-      (this.statistics.get(chatMsg.message) || 1) - 1
-    );
-    return chatMsg;
   }
 
   // Get all messages from a specific user

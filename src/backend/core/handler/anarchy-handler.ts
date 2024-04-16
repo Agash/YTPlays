@@ -25,7 +25,7 @@ export class AnarchyHandler implements IGameplayHandler {
   };
 
   private handleMessages(): void {
-    const nextCommand = this.queue.dequeue();
+    const nextCommand = this.queue.messages.shift();
     if (!nextCommand) return;
 
     tapKey(nextCommand?.message);

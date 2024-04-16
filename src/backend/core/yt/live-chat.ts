@@ -1,4 +1,4 @@
-import { BrowserWindow, app } from "electron";
+import { BrowserWindow } from "electron";
 import {
   Innertube,
   LiveChatContinuation,
@@ -15,7 +15,6 @@ import { DemocracyHandler } from "../handler/democracy-handler";
 import { IGameplayHandler } from "../handler/gameplay-handler";
 import { MonarchyHandler } from "../handler/monarchy-handler";
 import { StoreType } from "../typing";
-import { getRandomChatInput } from "../utils";
 import { NamesHandler } from "../handler/names-handler";
 
 export class LiveChat {

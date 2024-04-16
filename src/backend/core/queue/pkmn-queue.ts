@@ -1,4 +1,5 @@
 import { ChatMessage, QueueStatistics } from "../../../shared/types";
+import { IQueue } from "./queue";
 
 const pkmnNames = [
   "bulbasaur",
@@ -29,10 +30,9 @@ const pkmnNames = [
   "raichu",
   "sandshrew",
   "sandslash",
-  "nidoran♀",
+  "nidoran",
   "nidorina",
   "nidoqueen",
-  "nidoran♂",
   "nidorino",
   "nidoking",
   "clefairy",
@@ -1033,9 +1033,9 @@ const isValidCommand = (message: string) => {
 };
 
 // Create a class for the filtered queue
-export class PkmnQueue {
+export class PkmnQueue implements IQueue {
   public statistics: QueueStatistics = new Map<string, number>();
-  private messages: ChatMessage[] = [];
+  public messages: ChatMessage[] = [];
 
   // Add a valid message to the queue
   enqueue(chatMsg: ChatMessage): void {

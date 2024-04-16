@@ -56,7 +56,7 @@ const RunPage = ({ displayInfobox = true }: RunPageProps) => {
     );
   else
     return (
-      <div className="flex flex-col flex-grow mx-2 my-2">
+      <div className="flex flex-col flex-grow mx-2 my-2 min-w-80">
         {overlay()}
         <span className="flex-grow" />
         <div>

@@ -1,7 +1,7 @@
 {
   "name": "ytplays",
   "productName": "ytplays",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "description": "My Electron application description",
   "main": ".webpack/main",
   "repository": "https://github.com/Agash/YTPlays",

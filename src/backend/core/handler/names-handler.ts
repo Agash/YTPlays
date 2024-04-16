@@ -2,8 +2,8 @@ import { BrowserWindow } from "electron";
 import { GameplayHandlerConfig, IGameplayHandler } from "./gameplay-handler";
 import { ChatMessage } from "../../../shared/types";
 import { PkmnQueue } from "../queue/pkmn-queue";
-import { tapKey, tapName } from "../utils";
 import { IPC } from "../../../shared/ipc-commands";
+import { typeName } from "../utils";
 
 export class NamesHandler implements IGameplayHandler {
   mainWindow: BrowserWindow;
@@ -25,16 +25,9 @@ export class NamesHandler implements IGameplayHandler {
   };
 
   private handleMessages(): void {
-    const commands = [...this.queue.statistics.keys()];
-    if (commands.length > 0) {
-      const mostPopularCommand = commands.reduce((a, b) =>
-        this.queue.statistics.get(a) > this.queue.statistics.get(b) ? a : b
-      );
-
-      tapName(mostPopularCommand);
-      this.mainWindow.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, {
-        message: mostPopularCommand,
-      });
+    for (const msg of this.queue.messages) {
+      typeName(msg.message);
+      this.mainWindow.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, msg);
     }
 
     this.queue.clear();

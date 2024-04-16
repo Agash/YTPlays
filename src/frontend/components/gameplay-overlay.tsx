@@ -1,4 +1,5 @@
 import {
+  Kbd,
   Table,
   TableBody,
   TableCell,
@@ -141,7 +142,7 @@ const AnarchyOverlay = () => {
 
 const NamesOverlay = () => {
   const stats = useAppSelector((state) => state.queue.stats) || new Map();
-  const lastExecutedCommand = useAppSelector(
+  const lastNameWritten = useAppSelector(
     (state) => state.handler.lastExecutedMessage
   );
 
@@ -154,23 +155,21 @@ const NamesOverlay = () => {
       <div className="flex flex-row justify-between">
         <b>Last Executed: </b>
         <span>
-          {lastExecutedCommand?.username} typed&nbsp;
-          <ButtonForInput input={lastExecutedCommand?.message} />
+          {lastNameWritten?.username}:&nbsp;
+          <Kbd>{lastNameWritten?.message}</Kbd>
         </span>
       </div>
       <small>Current batch:</small>
       <Table aria-label="Current batch and the count of names">
         <TableHeader>
-          <TableColumn key="command">Name</TableColumn>
-          <TableColumn key="Amount">Amount</TableColumn>
+          <TableColumn key="name">Name</TableColumn>
         </TableHeader>
         <TableBody>
           {queue.map((s, idx) => (
             <TableRow key={idx}>
               <TableCell>
-                <ButtonForInput input={s[0]} />
+                <Kbd>{s[0]}</Kbd>
               </TableCell>
-              <TableCell>{s[1]}</TableCell>
             </TableRow>
           ))}
         </TableBody>
