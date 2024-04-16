@@ -6,6 +6,7 @@ import {
   AnarchyOverlay,
   DemocracyOverlay,
   MonarchyOverlay,
+  NamesOverlay,
 } from "../components/gameplay-overlay";
 
 type RunPageProps = {
@@ -24,6 +25,8 @@ const RunPage = ({ displayInfobox = true }: RunPageProps) => {
         return <MonarchyOverlay />;
       case "anarchy":
         return <AnarchyOverlay />;
+      case "names":
+        return <NamesOverlay />;
       default:
         console.warn("[YTPlays] baseData corrupt..?", baseData);
     }

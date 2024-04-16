@@ -139,4 +139,44 @@ const AnarchyOverlay = () => {
   );
 };
 
-export { DemocracyOverlay, MonarchyOverlay, AnarchyOverlay };
+const NamesOverlay = () => {
+  const stats = useAppSelector((state) => state.queue.stats) || new Map();
+  const lastExecutedCommand = useAppSelector(
+    (state) => state.handler.lastExecutedMessage
+  );
+
+  const queue = [...stats].slice(stats.size - 5, stats.size);
+
+  return (
+    <div className="flex flex-col space-y-4">
+      <h1>Pokemon Names</h1>
+      <small>How fast can chat type all pokemon names</small>
+      <div className="flex flex-row justify-between">
+        <b>Last Executed: </b>
+        <span>
+          {lastExecutedCommand?.username} typed&nbsp;
+          <ButtonForInput input={lastExecutedCommand?.message} />
+        </span>
+      </div>
+      <small>Current batch:</small>
+      <Table aria-label="Current batch and the count of names">
+        <TableHeader>
+          <TableColumn key="command">Name</TableColumn>
+          <TableColumn key="Amount">Amount</TableColumn>
+        </TableHeader>
+        <TableBody>
+          {queue.map((s, idx) => (
+            <TableRow key={idx}>
+              <TableCell>
+                <ButtonForInput input={s[0]} />
+              </TableCell>
+              <TableCell>{s[1]}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+};
+
+export { DemocracyOverlay, MonarchyOverlay, AnarchyOverlay, NamesOverlay };

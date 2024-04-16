@@ -1,5 +1,5 @@
 import { IGameplayHandler, GameplayHandlerConfig } from "./gameplay-handler";
-import { FilteredQueue } from "../queue";
+import { CommandQueue } from "../queue/command-queue";
 import { ChatMessage } from "../../../shared/types";
 import { tapKey } from "../utils";
 import { BrowserWindow } from "electron";
@@ -9,7 +9,7 @@ export class AnarchyHandler implements IGameplayHandler {
   mainWindow: BrowserWindow;
   config: GameplayHandlerConfig;
   timer: NodeJS.Timeout;
-  queue = new FilteredQueue();
+  queue = new CommandQueue();
 
   constructor(config: GameplayHandlerConfig, mainWindow: BrowserWindow) {
     this.config = config;

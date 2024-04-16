@@ -16,6 +16,7 @@ import { IGameplayHandler } from "../handler/gameplay-handler";
 import { MonarchyHandler } from "../handler/monarchy-handler";
 import { StoreType } from "../typing";
 import { getRandomChatInput } from "../utils";
+import { NamesHandler } from "../handler/names-handler";
 
 export class LiveChat {
   config: StoreType;
@@ -59,6 +60,14 @@ export class LiveChat {
       case "anarchy":
         this.handler = new AnarchyHandler(
           { timeOutInMs: this.config.settings.normalInterval },
+          this.mainWindow
+        );
+        break;
+      case "names":
+        this.handler = new NamesHandler(
+          {
+            timeOutInMs: this.config.settings.normalInterval,
+          },
           this.mainWindow
         );
     }
@@ -132,7 +141,7 @@ export class LiveChat {
             `[YTPlays] Got chat: [${chatMsg.username}] ${chatMsg.message}`
           );
 
-          if (!app.isPackaged) chatMsg.message = getRandomChatInput();
+          // if (!app.isPackaged) chatMsg.message = getRandomChatInput();
 
           this.handler.handleChatMessage(chatMsg);
           this.mainWindow.webContents.send(

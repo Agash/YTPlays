@@ -78,9 +78,10 @@ const ConfigPage = () => {
         onBlur={form.handleBlur}
         value={form.values.mode}
       >
-        <option>Democracy</option>
-        <option>Monarchy</option>
-        <option>Anarchy</option>
+        <option value="democracy">Democracy</option>
+        <option value="monarchy">Monarchy</option>
+        <option value="anarchy">Anarchy</option>
+        <option value="names">Names</option>
       </select>
       {form.errors.mode && form.touched.mode && <div>{form.errors.mode}</div>}
 

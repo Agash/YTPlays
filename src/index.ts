@@ -38,7 +38,7 @@ const store = new Store<StoreType>({
       properties: {
         mode: {
           type: "string",
-          enum: ["democracy", "monarchy", "anarchy"],
+          enum: ["democracy", "monarchy", "anarchy", "names"],
           default: "democracy",
         },
         democracyCountdown: {

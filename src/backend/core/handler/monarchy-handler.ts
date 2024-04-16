@@ -1,5 +1,5 @@
 import { IGameplayHandler, GameplayHandlerConfig } from "./gameplay-handler";
-import { FilteredQueue } from "../queue";
+import { CommandQueue } from "../queue/command-queue";
 import { ChatMessage } from "../../../shared/types";
 import { tapKey } from "../utils";
 import { BrowserWindow } from "electron";
@@ -11,7 +11,7 @@ export class MonarchyHandler implements IGameplayHandler {
   msgTimer: NodeJS.Timeout;
   monarchTimer: NodeJS.Timeout;
   threshold: number = 2;
-  queue: FilteredQueue = new FilteredQueue();
+  queue: CommandQueue = new CommandQueue();
   currentMonarch: string | undefined;
   userActivity: Record<string, number> = {}; // Track user activity
 

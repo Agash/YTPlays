@@ -1,15 +1,15 @@
-import { IGameplayHandler, GameplayHandlerConfig } from "./gameplay-handler";
-import { CommandQueue } from "../queue/command-queue";
-import { ChatMessage } from "../../../shared/types";
-import { tapKey } from "../utils";
 import { BrowserWindow } from "electron";
+import { GameplayHandlerConfig, IGameplayHandler } from "./gameplay-handler";
+import { ChatMessage } from "../../../shared/types";
+import { PkmnQueue } from "../queue/pkmn-queue";
+import { tapKey, tapName } from "../utils";
 import { IPC } from "../../../shared/ipc-commands";
 
-export class DemocracyHandler implements IGameplayHandler {
+export class NamesHandler implements IGameplayHandler {
   mainWindow: BrowserWindow;
   config: GameplayHandlerConfig;
   timer: NodeJS.Timeout;
-  queue = new CommandQueue();
+  queue = new PkmnQueue();
 
   constructor(config: GameplayHandlerConfig, mainWindow: BrowserWindow) {
     this.config = config;
@@ -31,7 +31,7 @@ export class DemocracyHandler implements IGameplayHandler {
         this.queue.statistics.get(a) > this.queue.statistics.get(b) ? a : b
       );
 
-      tapKey(mostPopularCommand);
+      tapName(mostPopularCommand);
       this.mainWindow.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, {
         message: mostPopularCommand,
       });

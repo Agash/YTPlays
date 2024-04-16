@@ -1,11 +1,11 @@
 import { BrowserWindow } from "electron";
 import { ChatMessage } from "../../../shared/types";
-import { FilteredQueue } from "../queue";
+import { IQueue } from "../queue/queue";
 
 export interface IGameplayHandler {
   mainWindow: BrowserWindow;
   config: GameplayHandlerConfig;
-  queue: FilteredQueue;
+  queue: IQueue;
   handleChatMessage(message: ChatMessage): void;
   exit(): void;
 }

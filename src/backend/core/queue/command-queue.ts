@@ -1,8 +1,8 @@
-import { ChatMessage, QueueStatistics } from "../../shared/types";
-import { isValidCommand } from "./utils";
+import { ChatMessage, QueueStatistics } from "../../../shared/types";
+import { isValidCommand } from "../utils";
 
 // Create a class for the filtered queue
-export class FilteredQueue {
+export class CommandQueue {
   public statistics: QueueStatistics = new Map<string, number>();
   private messages: ChatMessage[] = [];
 

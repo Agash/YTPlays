@@ -1,4 +1,4 @@
-import { keyTap, setKeyboardDelay } from "robotjs";
+import { keyTap, setKeyboardDelay, typeString } from "robotjs";
 import { buttonMapping } from "../../shared/constants";
 import { app } from "electron";
 
@@ -19,6 +19,12 @@ const tapKey = (key: string) => {
 
   console.log("[YTPlays] TAPPING KEY: ", mapping.button);
   if (app.isPackaged) keyTap(mapping.button);
+
+  // keyTap(mapping.button);
+};
+
+const tapName = (pkmnName: string) => {
+  typeString(pkmnName);
 };
 
 const getRandomChatInput = (): string => {
@@ -27,4 +33,4 @@ const getRandomChatInput = (): string => {
   return randomButton.input;
 };
 
-export { buttonMapping, isValidCommand, tapKey, getRandomChatInput };
+export { buttonMapping, isValidCommand, tapKey, tapName, getRandomChatInput };
