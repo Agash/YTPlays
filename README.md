@@ -15,7 +15,7 @@
 
 ## :star2: About the Project
 
-So Frank ([Astroid Videos on YouTube](https://www.youtube.com/@AstroidmaniaVideos)) had some fun ideas for streams with chat. I thought I'd implement those. HE actually got a couple of people helping him out, so I took the time to fix up a GUI (still messy code tho). It can do TwitchPlays style chat control with 3 modes (democracy, monarchy, anarchy) and also let chat type pokemon names, another great stream from Frank (also coding detours are always fun to watch).
+So Frank ([Astroid Videos on YouTube](https://www.youtube.com/@AstroidmaniaVideos)) had some fun ideas for streams with chat. I thought I'd implement those. He actually got a couple of people helping him out, so I took the time to fix up a GUI (still messy code tho). It can do TwitchPlays style chat control with 3 modes (democracy, monarchy, anarchy) and also let chat type pokemon names, another great stream from Frank (also coding detours are always fun to watch).
 
 ### :camera: Screenshots
 
@@ -50,6 +50,7 @@ ytplays-X.X.X.Setup.exe
 - [ ] write tests
 - [ ] button remapping
 - [ ] controller simulation
+- [ ] possibly rewrite everything afterwards using maybe C# after shaking down the concept..
 
 ## :handshake: Contact
 
