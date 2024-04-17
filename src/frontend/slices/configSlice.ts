@@ -6,51 +6,35 @@ type ConfigState = {
   mode: Mode;
   democracyCountdown: number;
   monarchyCooldown: number;
+  monarchyThreshold: number;
   normalInterval: number;
-  loaded: boolean;
 };
 
 const initialState: ConfigState = {
   videoId: "",
   mode: "democracy",
-  democracyCountdown: 5000,
-  monarchyCooldown: 15000,
-  normalInterval: 500,
-  loaded: false,
+  democracyCountdown: 15000,
+  monarchyCooldown: 25000,
+  monarchyThreshold: 2,
+  normalInterval: 1500,
 };
 
 const configSlice = createSlice({
   name: "config",
   initialState: initialState,
   reducers: {
-    loadConfig: (state, action: PayloadAction<ConfigState>) => {
-      state = action.payload;
-    },
-    setMode: (state, action: PayloadAction<Mode | null>) => {
-      state.mode = action.payload ?? "democracy";
-    },
-    setVideoId: (state, action: PayloadAction<string>) => {
-      state.videoId = action.payload;
-    },
-    setDemocracyCountdown: (state, action: PayloadAction<number | null>) => {
-      state.democracyCountdown = action.payload ?? 0;
-    },
-    setMonarchyCooldown: (state, action: PayloadAction<number | null>) => {
-      state.monarchyCooldown = action.payload ?? 0;
-    },
-    setNormalInterval: (state, action: PayloadAction<number | null>) => {
-      state.normalInterval = action.payload ?? 0;
+    setConfig: (state, action: PayloadAction<ConfigState>) => {
+      console.log("[YTPlays] STORE: setting config", action);
+      state.videoId = action.payload.videoId;
+      state.mode = action.payload.mode;
+      state.democracyCountdown = action.payload.democracyCountdown;
+      state.monarchyCooldown = action.payload.monarchyCooldown;
+      state.monarchyThreshold = action.payload.monarchyThreshold;
+      state.normalInterval = action.payload.normalInterval;
     },
   },
 });
 
 export { ConfigState };
-export const {
-  loadConfig,
-  setMode,
-  setVideoId,
-  setDemocracyCountdown,
-  setMonarchyCooldown,
-  setNormalInterval,
-} = configSlice.actions;
+export const { setConfig } = configSlice.actions;
 export default configSlice.reducer;

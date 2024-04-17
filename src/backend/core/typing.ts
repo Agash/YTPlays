@@ -8,6 +8,7 @@ export type StoreType = {
     mode: Mode;
     democracyCountdown: number;
     monarchyCooldown: number;
+    monarchyThreshold: number;
     normalInterval: number;
     username: string;
   };

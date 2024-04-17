@@ -3,24 +3,21 @@ import { useAppSelector } from "../hooks/storeHooks";
 import { Mode } from "../../shared/types";
 import { FormikErrors, useFormik } from "formik";
 import { useEffect } from "react";
+import { ConfigState } from "../slices/configSlice";
 
 const ConfigPage = () => {
   const navigate = useNavigate();
   const config = useAppSelector((state) => state.config);
   const form = useFormik({
-    initialValues: {
-      videoId: config.videoId,
-      mode: config.mode,
-      democracyCountdown: config.democracyCountdown,
-      monarchyCooldown: config.monarchyCooldown,
-      normalInterval: config.normalInterval,
-    },
+    enableReinitialize: true,
+    initialValues: config,
     validate: (values) => {
       const errors: FormikErrors<typeof values> = {};
       if (!values.videoId) errors.videoId = "Required";
       if (!values.mode) errors.mode = "Required";
       if (!values.democracyCountdown) errors.democracyCountdown = "Required";
       if (!values.monarchyCooldown) errors.monarchyCooldown = "Required";
+      if (!values.monarchyThreshold) errors.monarchyThreshold = "Required";
       if (!values.normalInterval) errors.normalInterval = "Required";
 
       return errors;
@@ -32,29 +29,32 @@ const ConfigPage = () => {
     },
   });
 
-  const setConfig = ({
-    videoId,
-    mode,
-    democracyCountdown,
-    monarchyCooldown,
-    normalInterval,
-  }: {
+  const setConfig = (config: {
     videoId: string;
     mode: Mode;
     democracyCountdown: number;
     monarchyCooldown: number;
+    monarchyThreshold: number;
     normalInterval: number;
   }) => {
-    window.mainAPI.setVideoId(videoId);
-    window.mainAPI.setMode(mode);
-    window.mainAPI.setDemocracyCountdown(democracyCountdown);
-    window.mainAPI.setMonarchyCooldown(monarchyCooldown);
-    window.mainAPI.setNormalInterval(normalInterval);
+    window.mainAPI.setConfig(config);
   };
 
-  useEffect(() => {
-    form.setValues(config);
-  }, [config]);
+  // useEffect(() => {
+  //   console.log("setup listener for config");
+
+  //   const removeEventListener = window.mainAPI.onConfig((data: ConfigState) => {
+  //     console.log("received config", data);
+  //     form.setValues(data);
+  //   });
+
+  //   console.log("requesting config");
+  //   window.mainAPI.getConfig();
+
+  //   return () => {
+  //     removeEventListener();
+  //   };
+  // }, []);
 
   const startAndForward = () => {
     window.mainAPI.startRun();
@@ -63,6 +63,7 @@ const ConfigPage = () => {
 
   return (
     <form className="max-w-sm mx-auto" onSubmit={form.handleSubmit}>
+      <h1 className="my-5">Pre-flight Check</h1>
       <div className="mb-5">
         <label
           htmlFor="videoId"
@@ -75,18 +76,32 @@ const ConfigPage = () => {
         >
           YouTube Video ID
         </label>
-        <input
-          type="text"
-          name="videoId"
-          onChange={form.handleChange}
-          onBlur={form.handleBlur}
-          value={form.values.videoId}
-          className={
-            form.errors.videoId && form.touched.videoId
-              ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500"
-              : "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          }
-        />
+
+        <div className="flex">
+          <span
+            className={
+              form.errors.videoId && form.touched.videoId
+                ? "inline-flex items-center px-3 text-sm text-red-900 bg-gray-200 border border-e-0 border-red-500 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-red-500"
+                : "inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600"
+            }
+          >
+            youtube.com/v/
+          </span>
+          <input
+            type="text"
+            name="videoId"
+            onChange={form.handleChange}
+            onBlur={form.handleBlur}
+            value={form.values.videoId}
+            placeholder="lMmToBb2nKg"
+            className={
+              form.errors.videoId && form.touched.videoId
+                ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-none rounded-e-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-700 dark:border-red-500"
+                : "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-none rounded-e-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            }
+          />
+        </div>
+
         {form.errors.videoId && form.touched.videoId && (
           <div className="mt-2 text-sm text-red-600 dark:text-red-500">
             {form.errors.videoId}
@@ -122,7 +137,11 @@ const ConfigPage = () => {
           <option value="anarchy">Anarchy</option>
           <option value="names">Names</option>
         </select>
-        {form.errors.mode && form.touched.mode && <div>{form.errors.mode}</div>}
+        {form.errors.mode && form.touched.mode && (
+          <div className="mt-2 text-sm text-red-600 dark:text-red-500">
+            {form.errors.mode}
+          </div>
+        )}
       </div>
 
       <div className="mb-5">
@@ -135,7 +154,8 @@ const ConfigPage = () => {
               : "text-gray-900 dark:text-white")
           }
         >
-          Democracy Countdown (in Milliseconds)
+          Democracy Countdown&nbsp;
+          <small>(in Milliseconds)</small>
         </label>
         <input
           type="number"
@@ -150,7 +170,9 @@ const ConfigPage = () => {
           }
         />
         {form.errors.democracyCountdown && form.touched.democracyCountdown && (
-          <div>{form.errors.democracyCountdown}</div>
+          <div className="mt-2 text-sm text-red-600 dark:text-red-500">
+            {form.errors.democracyCountdown}
+          </div>
         )}
       </div>
 
@@ -164,7 +186,8 @@ const ConfigPage = () => {
               : "text-gray-900 dark:text-white")
           }
         >
-          Monarchy Cooldown (in Milliseconds)
+          Monarchy Cooldown&nbsp;
+          <small>(in Milliseconds)</small>
         </label>
         <input
           type="number"
@@ -179,7 +202,43 @@ const ConfigPage = () => {
           }
         />
         {form.errors.monarchyCooldown && form.touched.monarchyCooldown && (
-          <div>{form.errors.monarchyCooldown}</div>
+          <div className="mt-2 text-sm text-red-600 dark:text-red-500">
+            {form.errors.monarchyCooldown}
+          </div>
+        )}
+      </div>
+
+      <div className="mb-5">
+        <label
+          htmlFor="monarchyThreshold"
+          className={
+            "block mb-2 text-sm font-medium" +
+            (form.errors.monarchyThreshold && form.touched.monarchyThreshold
+              ? "text-red-700 dark:text-red-500"
+              : "text-gray-900 dark:text-white")
+          }
+        >
+          Monarchy Threshold&nbsp;
+          <small>
+            (# of messages needed for eligible users since last Monarch)
+          </small>
+        </label>
+        <input
+          type="number"
+          name="monarchyThreshold"
+          onChange={form.handleChange}
+          onBlur={form.handleBlur}
+          value={form.values.monarchyThreshold}
+          className={
+            form.errors.monarchyThreshold && form.touched.monarchyThreshold
+              ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500"
+              : "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          }
+        />
+        {form.errors.monarchyThreshold && form.touched.monarchyThreshold && (
+          <div className="mt-2 text-sm text-red-600 dark:text-red-500">
+            {form.errors.monarchyThreshold}
+          </div>
         )}
       </div>
 
@@ -193,7 +252,8 @@ const ConfigPage = () => {
               : "text-gray-900 dark:text-white")
           }
         >
-          Normal Interval (in Milliseconds)
+          Normal Interval&nbsp;
+          <small>(in Milliseconds)</small>
         </label>
         <input
           type="number"
@@ -208,7 +268,9 @@ const ConfigPage = () => {
           }
         />
         {form.errors.normalInterval && form.touched.normalInterval && (
-          <div>{form.errors.normalInterval}</div>
+          <div className="mt-2 text-sm text-red-600 dark:text-red-500">
+            {form.errors.normalInterval}
+          </div>
         )}
       </div>
       <button

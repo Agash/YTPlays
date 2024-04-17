@@ -1,12 +1,5 @@
 import { useAppDispatch } from "./hooks/storeHooks";
-import {
-  loadConfig,
-  setDemocracyCountdown,
-  setMode,
-  setMonarchyCooldown,
-  setNormalInterval,
-  setVideoId,
-} from "./slices/configSlice";
+import { setConfig } from "./slices/configSlice";
 import {
   commandExecuted,
   eligibleUsersUpdated,
@@ -14,7 +7,7 @@ import {
 } from "./slices/handlerSlice";
 import { updateStats } from "./slices/queueSlice";
 
-async function initializeStore() {
+function initializeStore() {
   const dispatch = useAppDispatch();
 
   window.queueAPI.onUpdateStats((stats) => {
@@ -30,32 +23,11 @@ async function initializeStore() {
   window.handlerAPI.onEligibleUsersUpdated((usernames) => {
     dispatch(eligibleUsersUpdated(usernames));
   });
-
-  window.mainAPI.onVideoIdSet((id) => {
-    dispatch(setVideoId(id));
+  window.mainAPI.onConfig((config) => {
+    console.log("[YTPlays] Received message, setting config", config);
+    dispatch(setConfig(config));
   });
-
-  window.mainAPI.onModeSet((mode) => {
-    dispatch(setMode(mode));
-  });
-
-  window.mainAPI.onDemocracyCountdownSet((value) => {
-    dispatch(setDemocracyCountdown(value));
-  });
-
-  window.mainAPI.onMonarchyCooldownSet((value) => {
-    dispatch(setMonarchyCooldown(value));
-  });
-
-  window.mainAPI.onNormalIntervalSet((value) => {
-    dispatch(setNormalInterval(value));
-  });
-
-  const initialConfig = await window.mainAPI.requestInitialData();
-  console.log("[YTPlays] Initial data: ", initialConfig);
-  dispatch(loadConfig(initialConfig));
-
-  return true;
+  window.mainAPI.getConfig();
 }
 
 export { initializeStore };

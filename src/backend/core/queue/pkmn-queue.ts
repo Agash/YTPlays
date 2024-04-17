@@ -1,10 +1,6 @@
 import { ChatMessage, QueueStatistics } from "../../../shared/types";
 import { IQueue } from "./queue";
-import pkmnNames from "./pkmn.json";
-
-const isValidCommand = (message: string) => {
-  return pkmnNames.includes(message);
-};
+import { isValidPkmnName } from "../utils";
 
 // Create a class for the filtered queue
 export class PkmnQueue implements IQueue {
@@ -13,7 +9,7 @@ export class PkmnQueue implements IQueue {
 
   // Add a valid message to the queue
   enqueue(chatMsg: ChatMessage): void {
-    if (isValidCommand(chatMsg.message)) {
+    if (isValidPkmnName(chatMsg.message)) {
       this.messages.push(chatMsg);
       this.statistics.set(
         chatMsg.message,

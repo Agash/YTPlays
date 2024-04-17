@@ -17,15 +17,21 @@ export class NamesHandler implements IGameplayHandler {
     this.timer = setInterval(() => this.handleMessages(), config.timeOutInMs);
   }
 
+  // init = async () => {
+  //   this.queue.readList();
+  // };
+
   handleChatMessage = (message: ChatMessage) => {
     this.queue.enqueue(message);
   };
   exit = () => {
     clearInterval(this.timer);
+    this.queue.clear();
   };
 
   private handleMessages(): void {
     for (const msg of this.queue.messages) {
+      console.log("[YTPlays] NAMES HANDLER: handle message ", msg);
       typeName(msg.message);
       this.mainWindow.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, msg);
     }

@@ -1,4 +1,4 @@
-import { BrowserWindow } from "electron";
+import { BrowserWindow, app } from "electron";
 import {
   Innertube,
   LiveChatContinuation,
@@ -16,6 +16,7 @@ import { IGameplayHandler } from "../handler/gameplay-handler";
 import { MonarchyHandler } from "../handler/monarchy-handler";
 import { StoreType } from "../typing";
 import { NamesHandler } from "../handler/names-handler";
+import { getRandomChatInput, getRandomPkmnName } from "../utils";
 
 export class LiveChat {
   config: StoreType;
@@ -27,6 +28,7 @@ export class LiveChat {
   async start(mainWindow: BrowserWindow, config: StoreType) {
     this.mainWindow = mainWindow;
     this.config = config;
+    console.log("[YTPlays] Starting LiveChat with config: ", config);
 
     const yt = await Innertube.create({
       cache: new UniversalCache(false),
@@ -52,6 +54,7 @@ export class LiveChat {
           {
             timeOutInMs: this.config.settings.normalInterval,
             monarchTimerInMs: this.config.settings.monarchyCooldown,
+            monarchThreshold: this.config.settings.monarchyThreshold,
           },
           this.mainWindow
         );
@@ -97,11 +100,6 @@ export class LiveChat {
      * Initial info is what you see when you first open a Live Chat — this is; initial actions (pinned messages, top donations..), account's info and so on.
      */
     console.info("[YTPlays] Started LiveChat", initial_data);
-
-    this.mainWindow.webContents.send(
-      IPC.MAIN.MODE_SET,
-      this.config.settings.mode
-    );
   }
 
   handleChatUpdate(action: ChatAction) {
@@ -140,7 +138,11 @@ export class LiveChat {
             `[YTPlays] Got chat: [${chatMsg.username}] ${chatMsg.message}`
           );
 
-          // if (!app.isPackaged) chatMsg.message = getRandomChatInput();
+          if (!app.isPackaged)
+            chatMsg.message =
+              this.config.settings.mode == "names"
+                ? getRandomPkmnName()
+                : getRandomChatInput();
 
           this.handler.handleChatMessage(chatMsg);
           this.mainWindow.webContents.send(
@@ -171,5 +173,10 @@ export class LiveChat {
 
   exit(): void {
     this.handler?.exit();
+    this.mainWindow.webContents.send(
+      IPC.QUEUE.STATISTICS.UPDATE,
+      new Map<string, number>()
+    );
+    this.mainWindow.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, {});
   }
 }

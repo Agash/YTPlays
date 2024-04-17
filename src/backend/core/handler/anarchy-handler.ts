@@ -22,11 +22,14 @@ export class AnarchyHandler implements IGameplayHandler {
   };
   exit = () => {
     clearInterval(this.timer);
+    this.queue.clear();
   };
 
   private handleMessages(): void {
     const nextCommand = this.queue.messages.shift();
     if (!nextCommand) return;
+
+    console.log("[YTPlays] ANARCHY HANDLER: handle message ", nextCommand);
 
     tapKey(nextCommand?.message);
     this.mainWindow.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, nextCommand);

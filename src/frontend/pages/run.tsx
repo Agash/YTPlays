@@ -14,11 +14,13 @@ type RunPageProps = {
 };
 
 const RunPage = ({ displayInfobox = true }: RunPageProps) => {
-  const baseData = useAppSelector((state) => state.config);
+  const mode = useAppSelector((state) => state.config.mode);
   const navigate = useNavigate();
 
+  console.log("[YTPlays] RUN PAGE: mode ", mode);
+
   const overlay = () => {
-    switch (baseData.mode) {
+    switch (mode) {
       case "democracy":
         return <DemocracyOverlay />;
       case "monarchy":
@@ -27,8 +29,6 @@ const RunPage = ({ displayInfobox = true }: RunPageProps) => {
         return <AnarchyOverlay />;
       case "names":
         return <NamesOverlay />;
-      default:
-        console.warn("[YTPlays] baseData corrupt..?", baseData);
     }
   };
 

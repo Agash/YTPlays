@@ -7,6 +7,7 @@ import { FuseV1Options, FuseVersion } from "@electron/fuses";
 
 import { mainConfig } from "./webpack.main.config";
 import { rendererConfig } from "./webpack.renderer.config";
+import { setLanguages } from "./forge/packager-hooks";
 
 const config: ForgeConfig = {
   packagerConfig: {
@@ -56,6 +57,17 @@ const config: ForgeConfig = {
       [FuseV1Options.OnlyLoadAppFromAsar]: true,
     }),
   ],
+  hooks: {
+    packageAfterCopy: async (
+      _config,
+      buildPath,
+      _electronVersion,
+      platform,
+      _arch
+    ) => {
+      await setLanguages(["en", "en-GB"], buildPath, platform);
+    },
+  },
 };
 
 export default config;

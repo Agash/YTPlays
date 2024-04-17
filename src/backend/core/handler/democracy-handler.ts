@@ -22,6 +22,7 @@ export class DemocracyHandler implements IGameplayHandler {
   };
   exit = () => {
     clearInterval(this.timer);
+    this.queue.clear();
   };
 
   private handleMessages(): void {
@@ -29,6 +30,11 @@ export class DemocracyHandler implements IGameplayHandler {
     if (commands.length > 0) {
       const mostPopularCommand = commands.reduce((a, b) =>
         this.queue.statistics.get(a) > this.queue.statistics.get(b) ? a : b
+      );
+
+      console.log(
+        "[YTPlays] DEMOCRACY HANDLER: handle message ",
+        mostPopularCommand
       );
 
       tapKey(mostPopularCommand);

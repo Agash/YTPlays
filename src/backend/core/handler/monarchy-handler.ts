@@ -10,7 +10,6 @@ export class MonarchyHandler implements IGameplayHandler {
   config: MonarchyHandlerConfig;
   msgTimer: NodeJS.Timeout;
   monarchTimer: NodeJS.Timeout;
-  threshold: number = 2;
   queue: CommandQueue = new CommandQueue();
   currentMonarch: string | undefined;
   userActivity: Record<string, number> = {}; // Track user activity
@@ -31,22 +30,32 @@ export class MonarchyHandler implements IGameplayHandler {
   exit(): void {
     clearInterval(this.msgTimer);
     clearInterval(this.monarchTimer);
+    this.queue.clear();
   }
 
   handleChatMessage(chatMsg: ChatMessage): void {
     this.queue.enqueue(chatMsg);
+
     // Update user activity count
     this.userActivity[chatMsg.username] =
       (this.userActivity[chatMsg.username] || 0) + 1;
+
     const userNames: string[] = Object.keys(this.userActivity).filter(
-      (userName) => this.userActivity[userName] >= this.threshold
+      (userName) => this.userActivity[userName] >= this.config.monarchThreshold
     );
+
     this.mainWindow.webContents.send(
       IPC.HANDLER.MONARCHY.UPDATE_ELIGIBLE_USERS,
       userNames
     );
 
-    if (!this.currentMonarch) this.currentMonarch = chatMsg.username;
+    if (!this.currentMonarch) {
+      this.currentMonarch = chatMsg.username;
+      this.mainWindow.webContents.send(
+        IPC.HANDLER.MONARCHY.CHANGED_MONARCH,
+        chatMsg.username
+      );
+    }
   }
 
   setMonarch(username: string, timeOut: 300_000): void {
@@ -66,7 +75,14 @@ export class MonarchyHandler implements IGameplayHandler {
       this.currentMonarch
     );
 
+    console.log(
+      "[YTPlays] MONARCHY HANDLER: current monarch ",
+      this.currentMonarch
+    );
+
     for (const command of messagesWithinTimeframe) {
+      console.log("[YTPlays] MONARCHY HANDLER: handle message ", command);
+
       tapKey(command.message);
       this.mainWindow.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, command);
     }
@@ -76,7 +92,7 @@ export class MonarchyHandler implements IGameplayHandler {
 
   private changeMonarch(): void {
     const userNames: string[] = Object.keys(this.userActivity).filter(
-      (userName) => this.userActivity[userName] >= this.threshold
+      (userName) => this.userActivity[userName] >= this.config.monarchThreshold
     );
 
     if (userNames.length === 0) {
@@ -97,4 +113,5 @@ export class MonarchyHandler implements IGameplayHandler {
 
 export type MonarchyHandlerConfig = GameplayHandlerConfig & {
   monarchTimerInMs: number;
+  monarchThreshold: number;
 };
