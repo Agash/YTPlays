@@ -10,6 +10,5 @@ export type StoreType = {
     monarchyCooldown: number;
     monarchyThreshold: number;
     normalInterval: number;
-    username: string;
   };
 };

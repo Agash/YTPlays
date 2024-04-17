@@ -62,10 +62,6 @@ const store = new Store<StoreType>({
           type: "number",
           default: 1500,
         },
-        username: {
-          type: "string",
-          default: "thmo_",
-        },
       },
       required: ["mode"],
     },
