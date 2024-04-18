@@ -37,13 +37,40 @@ So Frank ([Astroid Videos on YouTube](https://www.youtube.com/@AstroidmaniaVideo
 
 ### :gear: Installation
 
-Download the latest setup file and double click on it. It'll install and update automatically, it'll create a shortcut called ytplays.
+Download the latest setup file `ytplays-X.X.X.Setup.exe` under [releases](https://github.com/Agash/YTPlays/releases/latest) and double click on it. It'll install and automatically create a shortcut called ytplays.
 
-```
-ytplays-X.X.X.Setup.exe
-```
+### :fast_forward: Usage
 
-## :compass: Todos
+Look for ytplays in your start menu and open it. You'll be presented with following form:
+
+<p><img src="img/config.png" alt='Config' width='300'/></p>
+
+#### Form Fields
+
+- **YouTube Video ID:**<br />
+  The identifier of your live stream, generally the last part of your YouTube Link in your Browser. For example, if your YouTube Livestream has following link: https://www.youtube.com/watch?v=0zmlnOxmrsg the correct ID would be **0zmlnOxmrsg**
+- **Mode**<br/>
+  - _Democracy_:<br />
+    The chat command with most votes within a set time frame will win and be executed. Only valid buttons will be accepted as commands and the time frame is configurable further in the config.
+  - _Monarchy_: <br />
+    A ruler will be selected and within a set timeframe all commands of said ruler will be executed. The next ruler will be
+    selected out of all active users still typing a certain amount (threshold) of valid commands, since the selection of the last ruler. This is to avoid choosing a monarch out of not recently active users. The timeframe and the threshold are both configurable further in the config.
+  - _Anarchy_: <br />
+    Within a set timeframe (to avoid non-recent, still in-queue commands flooding the game during message spikes) all valid commands will be selected, the latest command of that list will be executed. Thus it's more or less luck based. Timeframe is configurable further in the config.
+  - _Names_: <br />
+    All valid pokemon names will be collected and immediately typed out by the keyboard. This was made specifically for when [Frank wanted to let chat play pkmnquiz](https://www.youtube.com/watch?v=9TMslV0kvcM).
+- **Democracy Countdown:**<br/>
+  Time in Milliseconds, for how long votes will be collected. After that period, the most recent, most voted command will be executed and all votes will be reset.
+- **Monarchy Cooldown:**<br/>
+  Time in Milliseconds, for how long the Monarch/Ruler has complete control. Choose this to be a bit bigger than you would the Democracy Countdown, simply because of lag. The user will need a while until he sees he's the monarch and to write down actual properly managed chain of commands. After this timeframe, out of all the eligible users, one will be **_randomly_** selected.
+- **Monarchy Threshold:**<br/>
+  The amount of valid commands a user must have typed in since the last Monarch/Ruler was chosen (or during his rule so to say), to be eligible as next monarch.
+  For example: UserA is now monarch, for the next 30 seconds. Threshold is set to 3. All users that within these 30 seconds, have also typed at least 3 valid commands in chat, are eligible to be the next monarch after the complete 30 seconds are over.
+  Everything will be reset and started again with the new randomly chosen UserB.
+- **Normal Interval:**<br/>
+  Time in Milliseconds, general polling interval. This is used in Anarchy Mode and any further modes, not needing any specific timeframe. This is mostly to slow down the typing and commands. My recommendation is set this to anything from 200ms to 1500ms ymmv tho.
+
+## :white_check_mark: Todos
 
 - [x] basic functionality
 - [x] basic GUI
@@ -67,3 +94,17 @@ This project wouldn't be possible without the amazing YouTube.js library, since 
 Inspired by:
 
 - [YoutubePlays by XLuma](https://github.com/XLuma/YoutubePlays/)
+
+## :scroll: Disclaimer
+
+This project is not affiliated with, endorsed, or sponsored by YouTube nor Pokemon or any of its affiliates or subsidiaries. All trademarks, logos, and brand names used in this project are the property of their respective owners and are used solely to describe the services provided.
+
+As such, any usage of trademarks to refer to such services is considered nominative use. If you have any questions or concerns, please contact me directly via email.
+
+## :book: License
+
+Distributed under the [MIT](https://choosealicense.com/licenses/mit/) License.
+
+<p align=" right">
+[<a href="#top">back to top</a>]
+</p>

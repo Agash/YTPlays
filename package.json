@@ -1,8 +1,8 @@
 {
   "name": "ytplays",
-  "productName": "ytplays",
-  "version": "0.3.0",
-  "description": "My Electron application description",
+  "productName": "YTPlays",
+  "version": "0.3.2",
+  "description": "Uses the LiveChat of YouTube to send keyboard keys or strings to the currently active window, made specifically for Pokemon and PokeTubers",
   "main": ".webpack/main",
   "repository": "https://github.com/Agash/YTPlays",
   "scripts": {
@@ -46,10 +46,19 @@
     "typescript": "~4.5.4",
     "typescript-eslint": "^7.6.0"
   },
-  "keywords": [],
+  "keywords": [
+    "chat",
+    "pokemon",
+    "youtube",
+    "streaming",
+    "twitchplays",
+    "ytplays",
+    "youtubeplays",
+    "chatplays"
+  ],
   "author": {
-    "name": "thmo",
-    "email": "Agash@users.noreply.github.com"
+    "name": "Agash (thmo_)",
+    "email": "agash@users.noreply.github.com"
   },
   "license": "MIT",
   "dependencies": {
