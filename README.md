@@ -70,6 +70,12 @@ Look for ytplays in your start menu and open it. You'll be presented with follow
 - **Normal Interval:**<br/>
   Time in Milliseconds, general polling interval. This is used in Anarchy Mode and any further modes, not needing any specific timeframe. This is mostly to slow down the typing and commands. My recommendation is set this to anything from 200ms to 1500ms ymmv tho.
 
+Click on the Button "Take Off!" and you're good to go. Any settings you chose will be saved for the future.
+
+If you want to stop the inputs and processing, simply click the "Back" button to return to this config screen.
+
+_**Note: It might take a couple of seconds for the LiveChat to load and start processing the messages. Take this time to focus the window or program (click on it) to make sure any keyboard inputs are directed towards that window.**_
+
 ## :white_check_mark: Todos
 
 - [x] basic functionality
