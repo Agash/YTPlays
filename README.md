@@ -109,7 +109,7 @@ As such, any usage of trademarks to refer to such services is considered nominat
 
 ## :book: License
 
-Distributed under the [MIT](https://choosealicense.com/licenses/mit/) License.
+Distributed under the [MIT](https://github.com/Agash/YTPlays?tab=MIT-1-ov-file#readme) License.
 
 <p align=" right">
 [<a href="#top">back to top</a>]
