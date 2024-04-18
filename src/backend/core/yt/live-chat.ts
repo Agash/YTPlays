@@ -91,8 +91,8 @@ export class LiveChat {
   }
 
   stop() {
-    this.handler?.exit();
     this.liveChat?.stop();
+    this.handler?.exit();
   }
 
   handleContinuation(initial_data: LiveChatContinuation) {

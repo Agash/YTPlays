@@ -31,7 +31,9 @@ export class MonarchyHandler implements IGameplayHandler {
     clearInterval(this.msgTimer);
     clearInterval(this.monarchTimer);
     this.queue.clear(true);
-    this.window.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, {});
+
+    if (!(this.window.isDestroyed() || this.window.webContents.isDestroyed()))
+      this.window?.webContents?.send(IPC.HANDLER.EXECUTED_COMMAND, {});
   }
 
   handleChatMessage(chatMsg: ChatMessage): void {

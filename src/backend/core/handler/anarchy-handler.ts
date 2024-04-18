@@ -24,7 +24,9 @@ export class AnarchyHandler implements IGameplayHandler {
   exit = () => {
     clearInterval(this.timer);
     this.queue.clear(true);
-    this.window.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, {});
+
+    if (!(this.window.isDestroyed() || this.window.webContents.isDestroyed()))
+      this.window?.webContents?.send(IPC.HANDLER.EXECUTED_COMMAND, {});
   };
 
   private handleMessages(): void {

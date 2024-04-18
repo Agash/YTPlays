@@ -54,16 +54,21 @@ export class CommandQueue implements IQueue {
 
     if (stats) {
       this.commandStatistics = new Map();
-      this.window?.webContents?.send(
-        IPC.QUEUE.COMMAND_STATISTICS.UPDATE,
-        this.commandStatistics
-      );
-
       this.userStatistics = new Map();
-      this.window?.webContents?.send(
-        IPC.QUEUE.USER_STATISTICS.UPDATE,
-        this.userStatistics
-      );
+
+      if (
+        !(this.window.webContents.isDestroyed() || this.window.isDestroyed())
+      ) {
+        this.window?.webContents?.send(
+          IPC.QUEUE.COMMAND_STATISTICS.UPDATE,
+          this.commandStatistics
+        );
+
+        this.window?.webContents?.send(
+          IPC.QUEUE.USER_STATISTICS.UPDATE,
+          this.userStatistics
+        );
+      }
     }
   }
 }
