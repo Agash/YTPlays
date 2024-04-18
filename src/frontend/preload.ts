@@ -7,8 +7,12 @@ import { ChatMessage, Mode, QueueStatistics } from "../shared/types";
 import { ConfigState } from "./slices/configSlice";
 
 const queueAPI = {
-  onUpdateStats: (callback: (stats: QueueStatistics) => void) =>
-    ipcRenderer.on(IPC.QUEUE.STATISTICS.UPDATE, (_event, value) =>
+  onUpdateCommandStats: (callback: (stats: QueueStatistics) => void) =>
+    ipcRenderer.on(IPC.QUEUE.COMMAND_STATISTICS.UPDATE, (_event, value) =>
+      callback(value)
+    ),
+  onUpdateUserStats: (callback: (stats: QueueStatistics) => void) =>
+    ipcRenderer.on(IPC.QUEUE.USER_STATISTICS.UPDATE, (_event, value) =>
       callback(value)
     ),
 };

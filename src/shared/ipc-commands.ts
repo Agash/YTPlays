@@ -7,8 +7,11 @@ export const IPC = {
     STOP: "stop-run",
   },
   QUEUE: {
-    STATISTICS: {
-      UPDATE: "update-stats",
+    COMMAND_STATISTICS: {
+      UPDATE: "update-command-stats",
+    },
+    USER_STATISTICS: {
+      UPDATE: "update-user-stats",
     },
   },
   HANDLER: {

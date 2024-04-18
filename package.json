@@ -1,7 +1,7 @@
 {
   "name": "ytplays",
   "productName": "ytplays",
-  "version": "0.2.7",
+  "version": "0.3",
   "description": "My Electron application description",
   "main": ".webpack/main",
   "repository": "https://github.com/Agash/YTPlays",
@@ -16,6 +16,7 @@
     "@electron-forge/cli": "^7.3.1",
     "@electron-forge/maker-squirrel": "^7.3.1",
     "@electron-forge/plugin-auto-unpack-natives": "^7.3.1",
+    "@electron-forge/plugin-electronegativity": "^7.4.0",
     "@electron-forge/plugin-fuses": "^7.3.1",
     "@electron-forge/plugin-webpack": "^7.3.1",
     "@electron-forge/publisher-github": "^7.4.0",

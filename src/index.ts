@@ -92,7 +92,7 @@ const createWindow = (): BrowserWindow => {
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   // Open the DevTools.
-  if (!app.isPackaged) mainWindow.webContents.openDevTools();
+  // if (!app.isPackaged) mainWindow.webContents.openDevTools();
 
   return mainWindow;
 };
@@ -156,9 +156,10 @@ app.on("ready", async () => {
 // explicitly with Cmd + Q.
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
-    chat?.exit();
     app.quit();
   }
+
+  chat?.stop();
 });
 
 app.on("activate", () => {

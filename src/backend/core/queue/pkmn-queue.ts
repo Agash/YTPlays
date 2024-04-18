@@ -1,19 +1,41 @@
 import { ChatMessage, QueueStatistics } from "../../../shared/types";
 import { IQueue } from "./queue";
 import { isValidPkmnName } from "../utils";
+import { BrowserWindow } from "electron";
+import { IPC } from "../../../shared/ipc-commands";
 
 // Create a class for the filtered queue
 export class PkmnQueue implements IQueue {
-  public statistics: QueueStatistics = new Map<string, number>();
+  window: BrowserWindow;
+  public commandStatistics: QueueStatistics = new Map<string, number>();
+  public userStatistics: QueueStatistics = new Map<string, number>();
   public messages: ChatMessage[] = [];
+
+  constructor(window: BrowserWindow) {
+    this.window = window;
+  }
 
   // Add a valid message to the queue
   enqueue(chatMsg: ChatMessage): void {
     if (isValidPkmnName(chatMsg.message)) {
       this.messages.push(chatMsg);
-      this.statistics.set(
+
+      this.commandStatistics.set(
         chatMsg.message,
-        (this.statistics.get(chatMsg.message) || 0) + 1
+        (this.commandStatistics.get(chatMsg.message) || 0) + 1
+      );
+      this.window.webContents.send(
+        IPC.QUEUE.COMMAND_STATISTICS.UPDATE,
+        this.commandStatistics
+      );
+
+      this.userStatistics.set(
+        chatMsg.username,
+        (this.userStatistics.get(chatMsg.username) || 0) + 1
+      );
+      this.window.webContents.send(
+        IPC.QUEUE.USER_STATISTICS.UPDATE,
+        this.userStatistics
       );
     } else {
       console.warn(
@@ -26,11 +48,6 @@ export class PkmnQueue implements IQueue {
   dequeue(): ChatMessage | undefined {
     const chatMsg = this.messages.shift();
     if (!chatMsg) return;
-
-    this.statistics.set(
-      chatMsg.message,
-      (this.statistics.get(chatMsg.message) || 1) - 1
-    );
     return chatMsg;
   }
 
@@ -39,8 +56,21 @@ export class PkmnQueue implements IQueue {
     this.messages.filter((msg) => msg.username === username);
 
   // Clear all messages from the queue
-  clear(): void {
+  clear(stats: boolean = false): void {
     this.messages = [];
-    this.statistics = new Map();
+
+    if (stats) {
+      this.commandStatistics = new Map();
+      this.window?.webContents?.send(
+        IPC.QUEUE.COMMAND_STATISTICS.UPDATE,
+        this.commandStatistics
+      );
+
+      this.userStatistics = new Map();
+      this.window?.webContents?.send(
+        IPC.QUEUE.USER_STATISTICS.UPDATE,
+        this.userStatistics
+      );
+    }
   }
 }

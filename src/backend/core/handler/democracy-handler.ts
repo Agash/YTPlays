@@ -6,15 +6,16 @@ import { BrowserWindow } from "electron";
 import { IPC } from "../../../shared/ipc-commands";
 
 export class DemocracyHandler implements IGameplayHandler {
-  mainWindow: BrowserWindow;
+  window: BrowserWindow;
   config: GameplayHandlerConfig;
   timer: NodeJS.Timeout;
-  queue = new CommandQueue();
+  queue: CommandQueue;
 
-  constructor(config: GameplayHandlerConfig, mainWindow: BrowserWindow) {
+  constructor(config: GameplayHandlerConfig, window: BrowserWindow) {
     this.config = config;
-    this.mainWindow = mainWindow;
+    this.window = window;
     this.timer = setInterval(() => this.handleMessages(), config.timeOutInMs);
+    this.queue = new CommandQueue(window);
   }
 
   handleChatMessage = (message: ChatMessage) => {
@@ -22,14 +23,18 @@ export class DemocracyHandler implements IGameplayHandler {
   };
   exit = () => {
     clearInterval(this.timer);
-    this.queue.clear();
+    this.queue.clear(true);
+    this.window.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, {});
   };
 
   private handleMessages(): void {
-    const commands = [...this.queue.statistics.keys()];
+    const commands = [...this.queue.commandStatistics.keys()];
     if (commands.length > 0) {
       const mostPopularCommand = commands.reduce((a, b) =>
-        this.queue.statistics.get(a) > this.queue.statistics.get(b) ? a : b
+        this.queue.commandStatistics.get(a) >
+        this.queue.commandStatistics.get(b)
+          ? a
+          : b
       );
 
       console.log(
@@ -38,11 +43,11 @@ export class DemocracyHandler implements IGameplayHandler {
       );
 
       tapKey(mostPopularCommand);
-      this.mainWindow.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, {
+      this.window.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, {
         message: mostPopularCommand,
       });
     }
 
-    this.queue.clear();
+    this.queue.clear(true);
   }
 }

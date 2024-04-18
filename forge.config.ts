@@ -1,6 +1,7 @@
 import type { ForgeConfig } from "@electron-forge/shared-types";
 import { MakerSquirrel } from "@electron-forge/maker-squirrel";
 import { AutoUnpackNativesPlugin } from "@electron-forge/plugin-auto-unpack-natives";
+import { ElectronegativityPlugin } from "@electron-forge/plugin-electronegativity";
 import { WebpackPlugin } from "@electron-forge/plugin-webpack";
 import { FusesPlugin } from "@electron-forge/plugin-fuses";
 import { FuseV1Options, FuseVersion } from "@electron/fuses";
@@ -29,7 +30,10 @@ const config: ForgeConfig = {
   ],
   plugins: [
     new AutoUnpackNativesPlugin({}),
+    // new ElectronegativityPlugin({ isSarif: true }),
     new WebpackPlugin({
+      devContentSecurityPolicy:
+        "default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;",
       mainConfig,
       renderer: {
         config: rendererConfig,

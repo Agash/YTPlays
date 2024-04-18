@@ -6,15 +6,16 @@ import { BrowserWindow } from "electron";
 import { IPC } from "../../../shared/ipc-commands";
 
 export class AnarchyHandler implements IGameplayHandler {
-  mainWindow: BrowserWindow;
+  window: BrowserWindow;
   config: GameplayHandlerConfig;
   timer: NodeJS.Timeout;
-  queue = new CommandQueue();
+  queue: CommandQueue;
 
-  constructor(config: GameplayHandlerConfig, mainWindow: BrowserWindow) {
+  constructor(config: GameplayHandlerConfig, window: BrowserWindow) {
     this.config = config;
-    this.mainWindow = mainWindow;
+    this.window = window;
     this.timer = setInterval(() => this.handleMessages(), config.timeOutInMs);
+    this.queue = new CommandQueue(window);
   }
 
   handleChatMessage = (message: ChatMessage) => {
@@ -22,7 +23,8 @@ export class AnarchyHandler implements IGameplayHandler {
   };
   exit = () => {
     clearInterval(this.timer);
-    this.queue.clear();
+    this.queue.clear(true);
+    this.window.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, {});
   };
 
   private handleMessages(): void {
@@ -32,7 +34,7 @@ export class AnarchyHandler implements IGameplayHandler {
     console.log("[YTPlays] ANARCHY HANDLER: handle message ", nextCommand);
 
     tapKey(nextCommand?.message);
-    this.mainWindow.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, nextCommand);
+    this.window.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, nextCommand);
     this.queue.clear();
   }
 }

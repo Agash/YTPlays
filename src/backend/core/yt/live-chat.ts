@@ -145,10 +145,6 @@ export class LiveChat {
                 : getRandomChatInput();
 
           this.handler.handleChatMessage(chatMsg);
-          this.mainWindow.webContents.send(
-            IPC.QUEUE.STATISTICS.UPDATE,
-            this.handler.queue.statistics
-          );
           break;
         case "LiveChatPaidMessage":
           console.info(
@@ -173,10 +169,5 @@ export class LiveChat {
 
   exit(): void {
     this.handler?.exit();
-    this.mainWindow.webContents.send(
-      IPC.QUEUE.STATISTICS.UPDATE,
-      new Map<string, number>()
-    );
-    this.mainWindow.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, {});
   }
 }

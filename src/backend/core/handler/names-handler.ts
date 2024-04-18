@@ -6,34 +6,38 @@ import { IPC } from "../../../shared/ipc-commands";
 import { typeName } from "../utils";
 
 export class NamesHandler implements IGameplayHandler {
-  mainWindow: BrowserWindow;
+  window: BrowserWindow;
   config: GameplayHandlerConfig;
   timer: NodeJS.Timeout;
-  queue = new PkmnQueue();
+  queue: PkmnQueue;
+  userActivity: Record<string, number> = {}; // Track user activity
 
-  constructor(config: GameplayHandlerConfig, mainWindow: BrowserWindow) {
+  constructor(config: GameplayHandlerConfig, window: BrowserWindow) {
     this.config = config;
-    this.mainWindow = mainWindow;
+    this.window = window;
     this.timer = setInterval(() => this.handleMessages(), config.timeOutInMs);
+    this.queue = new PkmnQueue(window);
   }
-
-  // init = async () => {
-  //   this.queue.readList();
-  // };
 
   handleChatMessage = (message: ChatMessage) => {
     this.queue.enqueue(message);
+
+    // Update user activity count
+    this.userActivity[message.username] =
+      (this.userActivity[message.username] || 0) + 1;
   };
+
   exit = () => {
     clearInterval(this.timer);
-    this.queue.clear();
+    this.queue.clear(true);
+    this.window.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, {});
   };
 
   private handleMessages(): void {
     for (const msg of this.queue.messages) {
       console.log("[YTPlays] NAMES HANDLER: handle message ", msg);
       typeName(msg.message);
-      this.mainWindow.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, msg);
+      this.window.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, msg);
     }
 
     this.queue.clear();

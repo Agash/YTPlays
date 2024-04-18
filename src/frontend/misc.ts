@@ -5,13 +5,16 @@ import {
   eligibleUsersUpdated,
   monarchChanged,
 } from "./slices/handlerSlice";
-import { updateStats } from "./slices/queueSlice";
+import { updateCommandStats, updateUserStats } from "./slices/queueSlice";
 
 function initializeStore() {
   const dispatch = useAppDispatch();
 
-  window.queueAPI.onUpdateStats((stats) => {
-    dispatch(updateStats(stats));
+  window.queueAPI.onUpdateCommandStats((stats) => {
+    dispatch(updateCommandStats(stats));
+  });
+  window.queueAPI.onUpdateUserStats((stats) => {
+    dispatch(updateUserStats(stats));
   });
 
   window.handlerAPI.onExecutedCommand((chat) => {
