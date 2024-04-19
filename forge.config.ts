@@ -13,9 +13,16 @@ import { setLanguages } from "./forge/packager-hooks";
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
+    icon: "ytplays-icon",
   },
   rebuildConfig: {},
-  makers: [new MakerSquirrel({})],
+  makers: [
+    new MakerSquirrel({
+      iconUrl:
+        "https://raw.githubusercontent.com/Agash/YTPlays/master/ytplays-icon.ico",
+      setupIcon: "ytplays-icon.ico",
+    }),
+  ],
   publishers: [
     {
       name: "@electron-forge/publisher-github",
