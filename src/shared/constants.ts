@@ -8,6 +8,7 @@ type ButtonMapping = {
   };
   input: string;
 };
+
 const buttonMapping: ButtonMapping[] = [
   {
     button: "a",
@@ -95,4 +96,49 @@ const buttonMapping: ButtonMapping[] = [
   },
 ];
 
-export { buttonMapping };
+const pokeRogueButtonMapping: ButtonMapping[] = [
+  {
+    button: "z",
+    display: {
+      str: "A",
+    },
+    input: "a",
+  },
+  {
+    button: "x",
+    display: {
+      str: "B",
+    },
+    input: "b",
+  },
+  {
+    button: "up",
+    display: {
+      key: "up",
+    },
+    input: "up",
+  },
+  {
+    button: "down",
+    display: {
+      key: "down",
+    },
+    input: "down",
+  },
+  {
+    button: "left",
+    display: {
+      key: "left",
+    },
+    input: "left",
+  },
+  {
+    button: "right",
+    display: {
+      key: "right",
+    },
+    input: "right",
+  },
+];
+
+export { ButtonMapping, buttonMapping, pokeRogueButtonMapping };

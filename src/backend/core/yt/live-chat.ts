@@ -4,6 +4,7 @@ import {
   LiveChatContinuation,
   UniversalCache,
   YTNodes,
+  // eslint-disable-next-line import/no-unresolved
 } from "youtubei.js";
 import YTChat, {
   ChatAction,
@@ -45,7 +46,11 @@ export class LiveChat {
     switch (this.config.settings.mode) {
       case "democracy":
         this.handler = new DemocracyHandler(
-          { timeOutInMs: this.config.settings.democracyCountdown },
+          {
+            timeOutInMs: this.config.settings.democracyCountdown,
+            streamDelay: this.config.settings.streamDelay,
+            buttonPreset: this.config.settings.buttonPreset,
+          },
           this.mainWindow
         );
         break;
@@ -55,13 +60,18 @@ export class LiveChat {
             timeOutInMs: this.config.settings.normalInterval,
             monarchTimerInMs: this.config.settings.monarchyCooldown,
             monarchThreshold: this.config.settings.monarchyThreshold,
+            buttonPreset: this.config.settings.buttonPreset,
           },
           this.mainWindow
         );
         break;
       case "anarchy":
         this.handler = new AnarchyHandler(
-          { timeOutInMs: this.config.settings.normalInterval },
+          {
+            timeOutInMs: this.config.settings.normalInterval,
+            streamDelay: this.config.settings.streamDelay,
+            buttonPreset: this.config.settings.buttonPreset,
+          },
           this.mainWindow
         );
         break;
@@ -125,7 +135,9 @@ export class LiveChat {
 
       switch (item.type) {
         case "LiveChatTextMessage":
+          // eslint-disable-next-line no-case-declarations
           const ytmsg = item.as(YTNodes.LiveChatTextMessage);
+          // eslint-disable-next-line no-case-declarations
           const chatMsg: ChatMessage = {
             message: ytmsg.message.toString().toLowerCase(),
             timestamp: new Date(
@@ -138,11 +150,11 @@ export class LiveChat {
             `[YTPlays] Got chat: [${chatMsg.username}] ${chatMsg.message}`
           );
 
-          if (!app.isPackaged)
-            chatMsg.message =
-              this.config.settings.mode == "names"
-                ? getRandomPkmnName()
-                : getRandomChatInput();
+          // if (!app.isPackaged)
+          //   chatMsg.message =
+          //     this.config.settings.mode == "names"
+          //       ? getRandomPkmnName()
+          //       : getRandomChatInput(this.config.settings.buttonPreset);
 
           this.handler.handleChatMessage(chatMsg);
           break;

@@ -1,6 +1,6 @@
 import { IGameplayHandler, GameplayHandlerConfig } from "./gameplay-handler";
 import { CommandQueue } from "../queue/command-queue";
-import { ChatMessage } from "../../../shared/types";
+import { ButtonPreset, ChatMessage } from "../../../shared/types";
 import { tapKey } from "../utils";
 import { BrowserWindow } from "electron";
 import { IPC } from "../../../shared/ipc-commands";
@@ -24,7 +24,7 @@ export class MonarchyHandler implements IGameplayHandler {
       () => this.changeMonarch(),
       config.monarchTimerInMs
     );
-    this.queue = new CommandQueue(window);
+    this.queue = new CommandQueue(window, config.buttonPreset);
   }
 
   exit(): void {
@@ -88,7 +88,7 @@ export class MonarchyHandler implements IGameplayHandler {
     for (const command of monarchMessages) {
       console.log("[YTPlays] MONARCHY HANDLER: handle message ", command);
 
-      tapKey(command.message);
+      tapKey(command.message, this.config.buttonPreset);
       this.window.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, command);
     }
 
@@ -120,4 +120,5 @@ export class MonarchyHandler implements IGameplayHandler {
 export type MonarchyHandlerConfig = GameplayHandlerConfig & {
   monarchTimerInMs: number;
   monarchThreshold: number;
+  buttonPreset: ButtonPreset;
 };

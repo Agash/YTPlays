@@ -1,5 +1,9 @@
 import { BrowserWindow } from "electron";
-import { ChatMessage, QueueStatistics } from "../../../shared/types";
+import {
+  ButtonPreset,
+  ChatMessage,
+  QueueStatistics,
+} from "../../../shared/types";
 import { isValidCommand } from "../utils";
 import { IQueue } from "./queue";
 import { IPC } from "../../../shared/ipc-commands";
@@ -7,17 +11,20 @@ import { IPC } from "../../../shared/ipc-commands";
 // Create a class for the filtered queue
 export class CommandQueue implements IQueue {
   window: BrowserWindow;
+  buttonPreset: ButtonPreset;
+
   public commandStatistics: QueueStatistics = new Map<string, number>();
   public userStatistics: QueueStatistics = new Map<string, number>();
   public messages: ChatMessage[] = [];
 
-  constructor(window: BrowserWindow) {
+  constructor(window: BrowserWindow, buttonPreset: ButtonPreset = "normal") {
     this.window = window;
+    this.buttonPreset = buttonPreset;
   }
 
   // Add a valid message to the queue
   enqueue(chatMsg: ChatMessage): void {
-    if (isValidCommand(chatMsg.message)) {
+    if (isValidCommand(chatMsg.message, this.buttonPreset)) {
       this.messages.push(chatMsg);
 
       this.commandStatistics.set(
@@ -49,7 +56,7 @@ export class CommandQueue implements IQueue {
     this.messages.filter((msg) => msg.username === username);
 
   // Clear all messages from the queue
-  clear(stats: boolean = false): void {
+  clear(stats = false): void {
     this.messages = [];
 
     if (stats) {

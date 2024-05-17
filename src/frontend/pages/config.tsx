@@ -1,9 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../hooks/storeHooks";
-import { Mode } from "../../shared/types";
+import { ButtonPreset, Mode } from "../../shared/types";
 import { FormikErrors, useFormik } from "formik";
-import { useEffect } from "react";
-import { ConfigState } from "../slices/configSlice";
 
 const ConfigPage = () => {
   const navigate = useNavigate();
@@ -15,10 +13,12 @@ const ConfigPage = () => {
       const errors: FormikErrors<typeof values> = {};
       if (!values.videoId) errors.videoId = "Required";
       if (!values.mode) errors.mode = "Required";
+      if (!values.buttonPreset) errors.buttonPreset = "Required";
       if (!values.democracyCountdown) errors.democracyCountdown = "Required";
       if (!values.monarchyCooldown) errors.monarchyCooldown = "Required";
       if (!values.monarchyThreshold) errors.monarchyThreshold = "Required";
       if (!values.normalInterval) errors.normalInterval = "Required";
+      if (!values.streamDelay) errors.streamDelay = "Required";
 
       return errors;
     },
@@ -32,10 +32,12 @@ const ConfigPage = () => {
   const setConfig = (config: {
     videoId: string;
     mode: Mode;
+    buttonPreset: ButtonPreset;
     democracyCountdown: number;
     monarchyCooldown: number;
     monarchyThreshold: number;
     normalInterval: number;
+    streamDelay: number;
   }) => {
     window.mainAPI.setConfig(config);
   };
@@ -122,6 +124,7 @@ const ConfigPage = () => {
           Mode
         </label>
         <select
+          title="mode"
           name="mode"
           onChange={form.handleChange}
           onBlur={form.handleBlur}
@@ -146,6 +149,42 @@ const ConfigPage = () => {
 
       <div className="mb-5">
         <label
+          htmlFor="buttonPreset"
+          className={
+            "block mb-2 text-sm font-medium" +
+            (form.errors.buttonPreset && form.touched.buttonPreset
+              ? "text-red-700 dark:text-red-500"
+              : "text-gray-900 dark:text-white")
+          }
+        >
+          Button Preset
+        </label>
+        <select
+          title="buttonPreset"
+          name="buttonPreset"
+          onChange={form.handleChange}
+          onBlur={form.handleBlur}
+          value={form.values.buttonPreset}
+          className={
+            form.errors.buttonPreset && form.touched.buttonPreset
+              ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500"
+              : "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          }
+        >
+          <option value="normal">Normal</option>
+          <option value="pokerogue">
+            PokeRogue ([A = z | B = x] without start)
+          </option>
+        </select>
+        {form.errors.buttonPreset && form.touched.buttonPreset && (
+          <div className="mt-2 text-sm text-red-600 dark:text-red-500">
+            {form.errors.buttonPreset}
+          </div>
+        )}
+      </div>
+
+      <div className="mb-5">
+        <label
           htmlFor="democracyCountdown"
           className={
             "block mb-2 text-sm font-medium" +
@@ -158,6 +197,7 @@ const ConfigPage = () => {
           <small>(in Milliseconds)</small>
         </label>
         <input
+          title="democracyCountdown"
           type="number"
           name="democracyCountdown"
           onChange={form.handleChange}
@@ -190,6 +230,7 @@ const ConfigPage = () => {
           <small>(in Milliseconds)</small>
         </label>
         <input
+          title="monarchyCooldown"
           type="number"
           name="monarchyCooldown"
           onChange={form.handleChange}
@@ -224,6 +265,7 @@ const ConfigPage = () => {
           </small>
         </label>
         <input
+          title="monarchyThreshold"
           type="number"
           name="monarchyThreshold"
           onChange={form.handleChange}
@@ -256,6 +298,7 @@ const ConfigPage = () => {
           <small>(in Milliseconds)</small>
         </label>
         <input
+          title="normalInterval"
           type="number"
           name="normalInterval"
           onChange={form.handleChange}
@@ -270,6 +313,44 @@ const ConfigPage = () => {
         {form.errors.normalInterval && form.touched.normalInterval && (
           <div className="mt-2 text-sm text-red-600 dark:text-red-500">
             {form.errors.normalInterval}
+          </div>
+        )}
+      </div>
+
+      <div className="mb-5">
+        <label
+          htmlFor="streamDelay"
+          className={
+            "block mb-2 text-sm font-medium" +
+            (form.errors.streamDelay && form.touched.streamDelay
+              ? "text-red-700 dark:text-red-500"
+              : "text-gray-900 dark:text-white")
+          }
+        >
+          Stream Delay&nbsp;
+          <small>
+            (in Milliseconds [this makes it wait that many (ms) until accepting
+            new input to adjust for delay from chat a bit; the stream delay
+            itself is dependent on the delay the video has from the streamers PC
+            to YT to PC])
+          </small>
+        </label>
+        <input
+          title="streamDelay"
+          type="number"
+          name="streamDelay"
+          onChange={form.handleChange}
+          onBlur={form.handleBlur}
+          value={form.values.streamDelay}
+          className={
+            form.errors.streamDelay && form.touched.streamDelay
+              ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500"
+              : "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          }
+        />
+        {form.errors.streamDelay && form.touched.streamDelay && (
+          <div className="mt-2 text-sm text-red-600 dark:text-red-500">
+            {form.errors.streamDelay}
           </div>
         )}
       </div>
