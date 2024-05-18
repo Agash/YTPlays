@@ -176,7 +176,7 @@ export class LiveChat {
       case modCommands.setMonarch: {
         if (this.handler instanceof MonarchyHandler && commandArgs.length > 0) {
           const timeOut =
-            commandArgs.length > 1 ? parseInt(commandArgs[1]) : null;
+            commandArgs.length > 1 ? parseInt(commandArgs.at(-1)) : null;
           const monarch = commandArgs[0].startsWith("@")
             ? commandArgs[0].substring(1)
             : commandArgs[0];

@@ -1,0 +1,55 @@
+diff --git a/node_modules/youtubei.js/dist/src/parser/youtube/LiveChat.js b/node_modules/youtubei.js/dist/src/parser/youtube/LiveChat.js
+index 45ddfd6..77a172c 100644
+--- a/node_modules/youtubei.js/dist/src/parser/youtube/LiveChat.js
++++ b/node_modules/youtubei.js/dist/src/parser/youtube/LiveChat.js
+@@ -35,7 +35,7 @@ class LiveChat extends EventEmitter {
+         this.smoothed_queue.callback = (actions) => __awaiter(this, void 0, void 0, function* () {
+             if (!actions.length) {
+                 // Wait 2 seconds before requesting an incremental continuation if the action group is empty.
+-                yield __classPrivateFieldGet(this, _LiveChat_instances, "m", _LiveChat_wait).call(this, 2000);
++                yield __classPrivateFieldGet(this, _LiveChat_instances, "m", _LiveChat_wait).call(this, 1000);
+             }
+             else if (actions.length < 10) {
+                 // If there are less than 10 actions, wait until all of them are emitted.
+@@ -47,7 +47,7 @@ class LiveChat extends EventEmitter {
+                  * and as we don't have that, this ends up being quite innacurate.
+                  */
+                 __classPrivateFieldGet(this, _LiveChat_instances, "m", _LiveChat_emitSmoothedActions).call(this, actions);
+-                yield __classPrivateFieldGet(this, _LiveChat_instances, "m", _LiveChat_wait).call(this, 2000);
++                yield __classPrivateFieldGet(this, _LiveChat_instances, "m", _LiveChat_wait).call(this, 1000);
+             }
+             else {
+                 // There are more than 10 actions, emit them asynchonously so we can request the next incremental continuation.
+@@ -168,7 +168,7 @@ _LiveChat_actions = new WeakMap(), _LiveChat_video_id = new WeakMap(), _LiveChat
+         catch (err) {
+             this.emit('error', err);
+             if ((__classPrivateFieldSet(this, _LiveChat_retry_count, (_b = __classPrivateFieldGet(this, _LiveChat_retry_count, "f"), _a = _b++, _b), "f"), _a) < 10) {
+-                yield __classPrivateFieldGet(this, _LiveChat_instances, "m", _LiveChat_wait).call(this, 2000);
++                yield __classPrivateFieldGet(this, _LiveChat_instances, "m", _LiveChat_wait).call(this, 1000);
+                 __classPrivateFieldGet(this, _LiveChat_instances, "m", _LiveChat_pollLivechat).call(this);
+             }
+             else {
+@@ -180,7 +180,7 @@ _LiveChat_actions = new WeakMap(), _LiveChat_video_id = new WeakMap(), _LiveChat
+     }))();
+ }, _LiveChat_emitSmoothedActions = function _LiveChat_emitSmoothedActions(action_queue) {
+     return __awaiter(this, void 0, void 0, function* () {
+-        const base = 1E4;
++        const base = 1E4 / 20;
+         let delay = action_queue.length < base / 80 ? 1 : Math.ceil(action_queue.length / (base / 80));
+         const emit_delay_ms = delay == 1 ? (delay = base / action_queue.length,
+             delay *= Math.random() + 0.5,
+@@ -210,12 +210,12 @@ _LiveChat_actions = new WeakMap(), _LiveChat_video_id = new WeakMap(), _LiveChat
+                 date: ((_k = data.actions) === null || _k === void 0 ? void 0 : _k.array().firstOfType(UpdateDateTextAction)) || ((_l = this.metadata) === null || _l === void 0 ? void 0 : _l.date)
+             };
+             this.emit('metadata-update', this.metadata);
+-            yield __classPrivateFieldGet(this, _LiveChat_instances, "m", _LiveChat_wait).call(this, 5000);
++            yield __classPrivateFieldGet(this, _LiveChat_instances, "m", _LiveChat_wait).call(this, 1000);
+             if (this.running)
+                 __classPrivateFieldGet(this, _LiveChat_instances, "m", _LiveChat_pollMetadata).call(this);
+         }
+         catch (err) {
+-            yield __classPrivateFieldGet(this, _LiveChat_instances, "m", _LiveChat_wait).call(this, 2000);
++            yield __classPrivateFieldGet(this, _LiveChat_instances, "m", _LiveChat_wait).call(this, 1000);
+             if (this.running)
+                 __classPrivateFieldGet(this, _LiveChat_instances, "m", _LiveChat_pollMetadata).call(this);
+         }
