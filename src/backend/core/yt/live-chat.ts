@@ -97,7 +97,7 @@ export class LiveChat {
           const ytmsg = item.as(YTNodes.LiveChatTextMessage);
 
           if (this.isValidModCommand(ytmsg)) {
-            this.executeModCommand(ytmsg.message.toString().toLowerCase());
+            this.executeModCommand(ytmsg.message.toString());
           } else {
             const chatMsg: ChatMessage = {
               message: ytmsg.message.toString().toLowerCase(),
@@ -156,7 +156,7 @@ export class LiveChat {
   }
 
   private executeModCommand(commandMessage: string) {
-    const [command, ...commandArgs] = commandMessage.split(" ");
+    const [command, ...commandArgs] = commandMessage.toLowerCase().split(" ");
 
     switch (command) {
       case modCommands.setMode: {
