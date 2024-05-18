@@ -100,6 +100,20 @@ const pokeRogueButtonMapping: ButtonMapping[] = [
   {
     button: "z",
     display: {
+      str: "Z",
+    },
+    input: "z",
+  },
+  {
+    button: "x",
+    display: {
+      str: "X",
+    },
+    input: "x",
+  },
+  {
+    button: "z",
+    display: {
       str: "A",
     },
     input: "a",
