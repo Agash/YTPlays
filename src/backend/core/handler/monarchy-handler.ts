@@ -89,7 +89,7 @@ export class MonarchyHandler implements IGameplayHandler {
     this.queue.clear();
   }
 
-  private changeMonarch(): void {
+  private changeMonarch(resetUserStats = true): void {
     const userNames: string[] = Array.from(this.queue.userStatistics)
       .filter((value) => value[1] >= this.config.monarchThreshold)
       .map((value) => value[0]);
@@ -107,12 +107,18 @@ export class MonarchyHandler implements IGameplayHandler {
       this.currentMonarch
     );
 
-    this.queue.userStatistics = new Map<string, number>();
+    if (resetUserStats) {
+      this.queue.userStatistics = new Map<string, number>();
+    } else {
+      this.queue.userStatistics.delete(this.currentMonarch);
+    }
 
+    console.log("[YTPlays] Changed Monarch: ", this.currentMonarch);
     setTimeout(() => {
+      console.log("[YTPlays] entering monarch inactivity timeout");
       if (this.currentMonarch != this.lastExecuted?.username) {
         clearInterval(this.monarchTimer);
-        this.changeMonarch();
+        this.changeMonarch(false);
         this.monarchTimer = setInterval(
           () => this.changeMonarch(),
           this.config.monarchTimerInMs
