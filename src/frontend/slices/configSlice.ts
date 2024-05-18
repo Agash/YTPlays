@@ -30,7 +30,6 @@ const configSlice = createSlice({
   initialState: initialState,
   reducers: {
     setConfig: (state, action: PayloadAction<ConfigState>) => {
-      console.log("[YTPlays] STORE: setting config", action);
       state.videoId = action.payload.videoId;
       state.mode = action.payload.mode;
       state.buttonPreset = action.payload.buttonPreset;

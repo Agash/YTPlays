@@ -7,9 +7,14 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import { buttonMapping } from "../../shared/constants";
+import { buttonMapping, pokeRogueButtonMapping } from "../../shared/constants";
+import { useAppSelector } from "../hooks/storeHooks";
 
 function KeyMappings() {
+  const buttonPreset = useAppSelector((state) => state.config.buttonPreset);
+  const mappings =
+    buttonPreset == "pokerogue" ? pokeRogueButtonMapping : buttonMapping;
+
   return (
     <div className="flex flex-col space-y-4">
       <h2>Button mapping</h2>
@@ -19,7 +24,7 @@ function KeyMappings() {
           <TableColumn key="input">Input</TableColumn>
         </TableHeader>
         <TableBody>
-          {buttonMapping.map((mapping, idx) => (
+          {mappings.map((mapping, idx) => (
             <TableRow key={idx}>
               <TableCell>
                 <Kbd keys={mapping.display.key}>

@@ -31,14 +31,10 @@ const tapKey = (key: string, buttonPreset: ButtonPreset = "normal") => {
     return;
   }
 
-  console.log("[YTPlays] TAPPING KEY: ", mapping.button);
   if (app.isPackaged) keyTap(mapping.button);
-
-  // keyTap(mapping.button);
 };
 
 const typeName = (pkmnName: string) => {
-  console.log("[YTPlays] WRITING NAME: ", pkmnName);
   if (app.isPackaged) typeString(pkmnName);
 
   // typeString(pkmnName);

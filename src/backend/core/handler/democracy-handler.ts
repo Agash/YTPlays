@@ -51,11 +51,6 @@ export class DemocracyHandler implements IGameplayHandler {
           : b
       );
 
-      console.log(
-        "[YTPlays] DEMOCRACY HANDLER: handle message ",
-        mostPopularCommand
-      );
-
       tapKey(mostPopularCommand, this.config.buttonPreset);
 
       this.window.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, {

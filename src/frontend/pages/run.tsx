@@ -17,8 +17,6 @@ const RunPage = ({ displayInfobox = true }: RunPageProps) => {
   const mode = useAppSelector((state) => state.config.mode);
   const navigate = useNavigate();
 
-  console.log("[YTPlays] RUN PAGE: mode ", mode);
-
   const overlay = () => {
     switch (mode) {
       case "democracy":

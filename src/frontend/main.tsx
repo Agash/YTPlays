@@ -21,7 +21,7 @@ const router = createHashRouter([
       },
       {
         path: "run",
-        element: <RunPage displayInfobox={false} />,
+        element: <RunPage displayInfobox={true} />,
       },
     ],
   },

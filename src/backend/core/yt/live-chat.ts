@@ -35,26 +35,19 @@ export class LiveChat {
   async start(mainWindow: BrowserWindow, config: StoreType) {
     this.mainWindow = mainWindow;
     this.config = config;
-    console.log("[YTPlays] Starting LiveChat with config: ", config);
 
     const yt = await Innertube.create({
       cache: new UniversalCache(false),
       generate_session_locally: true,
     });
 
-    console.log("[YTPlays] Video ID: ", this.config.video.id);
-
     const info = await yt.getInfo(this.config.video.id);
-    console.log("[YTPlays] Loaded Video: ", info);
 
     this.liveChat = info.getLiveChat();
-
     this.attachHandler(this.config.settings.mode);
 
-    console.log("[YTPlays] Adding listeners");
     this.liveChat.once("start", (_) => {
       this.liveChat.applyFilter("LIVE_CHAT");
-      console.log("[YTPlays] Switching to Live Chat instead of Top Chat");
     });
     this.liveChat.on("start", (initial_data: LiveChatContinuation) =>
       this.handleContinuation(initial_data)
@@ -63,7 +56,6 @@ export class LiveChat {
       this.handleChatUpdate(action)
     );
 
-    console.log("[YTPlays] Start LiveChat");
     this.liveChat.start();
   }
 
@@ -115,10 +107,6 @@ export class LiveChat {
               username: ytmsg.author.name,
             };
 
-            console.log(
-              `[YTPlays] Got chat: [${chatMsg.username}] ${chatMsg.message}`
-            );
-
             // if (!app.isPackaged)
             //   chatMsg.message =
             //     this.config.settings.mode == "names"
@@ -165,7 +153,6 @@ export class LiveChat {
 
   private executeModCommand(commandMessage: string) {
     const [command, ...commandArgs] = commandMessage.split(" ");
-    console.log("[YTPlays] MOD COMMAND", command, commandArgs);
 
     switch (command) {
       case modCommands.setMode: {

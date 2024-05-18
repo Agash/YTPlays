@@ -193,8 +193,8 @@ app.on("activate", () => {
   }
 });
 
-app.whenReady().then(() => {
-  installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS])
-    .then((name) => console.log(`[YTPlays] Added Extension:  ${name}`))
-    .catch((err) => console.log("[YTPlays] An error occurred: ", err));
-});
+// app.whenReady().then(() => {
+//   installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS])
+//     .then((name) => console.log(`[YTPlays] Added Extension:  ${name}`))
+//     .catch((err) => console.log("[YTPlays] An error occurred: ", err));
+// });

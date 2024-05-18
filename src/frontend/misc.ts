@@ -27,7 +27,6 @@ function initializeStore() {
     dispatch(eligibleUsersUpdated(usernames));
   });
   window.mainAPI.onConfig((config) => {
-    console.log("[YTPlays] Received message, setting config", config);
     dispatch(setConfig(config));
   });
   window.mainAPI.getConfig();

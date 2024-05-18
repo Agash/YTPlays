@@ -42,8 +42,6 @@ export class AnarchyHandler implements IGameplayHandler {
     const nextCommand = this.queue.messages.shift();
     if (!nextCommand) return;
 
-    console.log("[YTPlays] ANARCHY HANDLER: handle message ", nextCommand);
-
     tapKey(nextCommand?.message, this.config.buttonPreset);
 
     this.window.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, nextCommand);

@@ -45,13 +45,6 @@ export class MonarchyHandler implements IGameplayHandler {
       .filter((value) => value[1] >= this.config.monarchThreshold)
       .map((value) => value[0]);
 
-    console.log(
-      "[YTPlays] MONARCH_HANDLER (handleChatMessage)",
-      this.config.monarchThreshold,
-      this.queue.userStatistics,
-      userNames
-    );
-
     this.window.webContents.send(
       IPC.HANDLER.MONARCHY.UPDATE_ELIGIBLE_USERS,
       userNames
@@ -87,14 +80,7 @@ export class MonarchyHandler implements IGameplayHandler {
   private handleMessages(): void {
     const monarchMessages = this.queue.getMessagesFromUser(this.currentMonarch);
 
-    console.log(
-      "[YTPlays] MONARCHY HANDLER: current monarch ",
-      this.currentMonarch
-    );
-
     for (const command of monarchMessages) {
-      console.log("[YTPlays] MONARCHY HANDLER: handle message ", command);
-
       tapKey(command.message, this.config.buttonPreset);
       this.lastExecuted = command;
       this.window.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, command);

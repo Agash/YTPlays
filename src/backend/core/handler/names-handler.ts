@@ -37,7 +37,6 @@ export class NamesHandler implements IGameplayHandler {
 
   private handleMessages(): void {
     for (const msg of this.queue.messages) {
-      console.log("[YTPlays] NAMES HANDLER: handle message ", msg);
       typeName(msg.message);
       this.window.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, msg);
     }
