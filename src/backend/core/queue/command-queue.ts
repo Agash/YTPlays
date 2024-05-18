@@ -44,10 +44,6 @@ export class CommandQueue implements IQueue {
         IPC.QUEUE.USER_STATISTICS.UPDATE,
         this.userStatistics
       );
-    } else {
-      console.warn(
-        `[YTPlays] Invalid command "${chatMsg.message}" received. Ignoring.`
-      );
     }
   }
 
