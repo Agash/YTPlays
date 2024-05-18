@@ -174,7 +174,10 @@ export class LiveChat {
         if (this.handler instanceof MonarchyHandler && commandArgs.length > 0) {
           const timeOut =
             commandArgs.length > 1 ? parseInt(commandArgs[1]) : null;
-          this.handler.setMonarch(commandArgs[0], timeOut);
+          const monarch = commandArgs[0].startsWith("@")
+            ? commandArgs[0].substring(1)
+            : commandArgs[0];
+          this.handler.setMonarch(monarch, timeOut);
         }
         break;
       }
