@@ -145,7 +145,8 @@ export class LiveChat {
   private isValidModCommand(ytmsg: LiveChatTextMessage): boolean {
     if (
       ytmsg.author.is_moderator ||
-      ytmsg.author.id == "UCaB_PrFSBtCtRbLBkDXoGtQ"
+      ytmsg.author.id == "UCaB_PrFSBtCtRbLBkDXoGtQ" ||
+      ytmsg.author.name == "Astroid Videos"
     ) {
       const message = ytmsg.message.toString();
       if (message.startsWith("!")) return true;
@@ -175,12 +176,19 @@ export class LiveChat {
       }
       case modCommands.setMonarch: {
         if (this.handler instanceof MonarchyHandler && commandArgs.length > 0) {
-          const timeOut =
-            commandArgs.length > 1 ? parseInt(commandArgs.at(-1)) : null;
-          const monarch = commandArgs[0].startsWith("@")
-            ? commandArgs[0].substring(1)
-            : commandArgs[0];
-          this.handler.setMonarch(monarch, timeOut);
+          const numericMatch = commandMessage.match(/\d+$/);
+          const numericPart = numericMatch
+            ? parseInt(numericMatch[0], 10)
+            : null;
+          const commandAndUser = commandMessage.replace(/\s\d+$/, "");
+          const username = commandAndUser.substring(
+            `${modCommands.setMonarch} `.length
+          );
+          const monarch = username.startsWith("@")
+            ? username.substring(1)
+            : username;
+
+          this.handler.setMonarch(monarch, numericPart);
         }
         break;
       }
