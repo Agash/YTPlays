@@ -113,9 +113,7 @@ export class MonarchyHandler implements IGameplayHandler {
       this.queue.userStatistics.delete(this.currentMonarch);
     }
 
-    console.log("[YTPlays] Changed Monarch: ", this.currentMonarch);
     setTimeout(() => {
-      console.log("[YTPlays] entering monarch inactivity timeout");
       if (this.currentMonarch != this.lastExecuted?.username) {
         clearInterval(this.monarchTimer);
         this.changeMonarch(false);

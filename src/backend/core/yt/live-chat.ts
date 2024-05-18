@@ -143,7 +143,10 @@ export class LiveChat {
   }
 
   private isValidModCommand(ytmsg: LiveChatTextMessage): boolean {
-    if (ytmsg.author.is_moderator || ytmsg.author.name == "thmo_") {
+    if (
+      ytmsg.author.is_moderator ||
+      ytmsg.author.id == "UCaB_PrFSBtCtRbLBkDXoGtQ"
+    ) {
       const message = ytmsg.message.toString();
       if (message.startsWith("!")) return true;
     }
