@@ -10,6 +10,7 @@ export type StoreType = {
     democracyCountdown: number;
     monarchyCooldown: number;
     monarchyThreshold: number;
+    inactivityTimerInMs: number;
     normalInterval: number;
     streamDelay: number;
   };

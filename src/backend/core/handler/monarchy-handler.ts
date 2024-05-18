@@ -13,6 +13,8 @@ export class MonarchyHandler implements IGameplayHandler {
   queue: CommandQueue;
   currentMonarch: string | undefined;
 
+  lastExecuted: ChatMessage;
+
   constructor(config: MonarchyHandlerConfig, window: BrowserWindow) {
     this.config = config;
     this.window = window;
@@ -64,10 +66,15 @@ export class MonarchyHandler implements IGameplayHandler {
     }
   }
 
-  setMonarch(username: string, timeOut: 120_000): void {
-    this.currentMonarch = username;
-
+  setMonarch(username: string, timeOut: number = null): void {
     clearInterval(this.monarchTimer);
+    this.currentMonarch = username;
+    this.window.webContents.send(
+      IPC.HANDLER.MONARCHY.CHANGED_MONARCH,
+      this.currentMonarch
+    );
+
+    if (timeOut == null) timeOut = this.config.monarchTimerInMs;
     setTimeout(() => {
       this.changeMonarch();
       this.monarchTimer = setInterval(
@@ -89,6 +96,7 @@ export class MonarchyHandler implements IGameplayHandler {
       console.log("[YTPlays] MONARCHY HANDLER: handle message ", command);
 
       tapKey(command.message, this.config.buttonPreset);
+      this.lastExecuted = command;
       this.window.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, command);
     }
 
@@ -110,15 +118,27 @@ export class MonarchyHandler implements IGameplayHandler {
     this.currentMonarch = randomUser;
     this.window.webContents.send(
       IPC.HANDLER.MONARCHY.CHANGED_MONARCH,
-      randomUser
+      this.currentMonarch
     );
 
     this.queue.userStatistics = new Map<string, number>();
+
+    setTimeout(() => {
+      if (this.currentMonarch != this.lastExecuted?.username) {
+        clearInterval(this.monarchTimer);
+        this.changeMonarch();
+        this.monarchTimer = setInterval(
+          () => this.changeMonarch(),
+          this.config.monarchTimerInMs
+        );
+      }
+    }, this.config.inactivityTimerInMs);
   }
 }
 
 export type MonarchyHandlerConfig = GameplayHandlerConfig & {
   monarchTimerInMs: number;
   monarchThreshold: number;
+  inactivityTimerInMs: number;
   buttonPreset: ButtonPreset;
 };

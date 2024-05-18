@@ -46,6 +46,7 @@ const store = new Store<StoreType>({
         democracyCountdown: 15000,
         monarchyCooldown: 25000,
         monarchyThreshold: 2,
+        inactivityTimerInMs: 1500,
         normalInterval: 1500,
         streamDelay: 1500,
       },
@@ -71,6 +72,10 @@ const store = new Store<StoreType>({
         monarchyThreshold: {
           type: "number",
           default: 2,
+        },
+        inactivityTimerInMs: {
+          type: "number",
+          default: 1500,
         },
         normalInterval: {
           type: "number",
@@ -122,6 +127,7 @@ app.on("ready", async () => {
       democracyCountdown: store.get("settings.democracyCountdown"),
       monarchyCooldown: store.get("settings.monarchyCooldown"),
       monarchyThreshold: store.get("settings.monarchyThreshold"),
+      inactivityTimerInMs: store.get("settings.inactivityTimerInMs"),
       normalInterval: store.get("settings.normalInterval"),
       streamDelay: store.get("settings.streamDelay"),
     };
@@ -148,6 +154,7 @@ app.on("ready", async () => {
         democracyCountdown: number;
         monarchyCooldown: number;
         monarchyThreshold: number;
+        inactivityTimerInMs: number;
         normalInterval: number;
         streamDelay: number;
       }
@@ -159,6 +166,7 @@ app.on("ready", async () => {
         democracyCountdown: config.democracyCountdown,
         monarchyCooldown: config.monarchyCooldown,
         monarchyThreshold: config.monarchyThreshold,
+        inactivityTimerInMs: config.inactivityTimerInMs,
         normalInterval: config.normalInterval,
         streamDelay: config.streamDelay,
       });

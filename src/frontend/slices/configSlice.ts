@@ -8,6 +8,7 @@ type ConfigState = {
   democracyCountdown: number;
   monarchyCooldown: number;
   monarchyThreshold: number;
+  inactivityTimerInMs: number;
   normalInterval: number;
   streamDelay: number;
 };
@@ -19,6 +20,7 @@ const initialState: ConfigState = {
   democracyCountdown: 15000,
   monarchyCooldown: 25000,
   monarchyThreshold: 2,
+  inactivityTimerInMs: 1500,
   normalInterval: 1500,
   streamDelay: 1500,
 };
@@ -35,6 +37,7 @@ const configSlice = createSlice({
       state.democracyCountdown = action.payload.democracyCountdown;
       state.monarchyCooldown = action.payload.monarchyCooldown;
       state.monarchyThreshold = action.payload.monarchyThreshold;
+      state.inactivityTimerInMs = action.payload.inactivityTimerInMs;
       state.normalInterval = action.payload.normalInterval;
       state.streamDelay = action.payload.streamDelay;
     },

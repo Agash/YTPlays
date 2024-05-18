@@ -155,4 +155,12 @@ const pokeRogueButtonMapping: ButtonMapping[] = [
   },
 ];
 
-export { ButtonMapping, buttonMapping, pokeRogueButtonMapping };
+const modCommands = {
+  setMode: "!setmode",
+  setStreamDelay: "!setstreamdelay",
+  setMonarch: "!setmonarch",
+  setTimeout: "!settimeout",
+  press: "!press",
+};
+
+export { ButtonMapping, buttonMapping, pokeRogueButtonMapping, modCommands };

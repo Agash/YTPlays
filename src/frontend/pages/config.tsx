@@ -17,6 +17,7 @@ const ConfigPage = () => {
       if (!values.democracyCountdown) errors.democracyCountdown = "Required";
       if (!values.monarchyCooldown) errors.monarchyCooldown = "Required";
       if (!values.monarchyThreshold) errors.monarchyThreshold = "Required";
+      if (!values.inactivityTimerInMs) errors.inactivityTimerInMs = "Required";
       if (!values.normalInterval) errors.normalInterval = "Required";
       if (!values.streamDelay) errors.streamDelay = "Required";
 
@@ -36,6 +37,7 @@ const ConfigPage = () => {
     democracyCountdown: number;
     monarchyCooldown: number;
     monarchyThreshold: number;
+    inactivityTimerInMs: number;
     normalInterval: number;
     streamDelay: number;
   }) => {
@@ -282,6 +284,43 @@ const ConfigPage = () => {
             {form.errors.monarchyThreshold}
           </div>
         )}
+      </div>
+
+      <div className="mb-5">
+        <label
+          htmlFor="inactivityTimerInMs"
+          className={
+            "block mb-2 text-sm font-medium" +
+            (form.errors.inactivityTimerInMs && form.touched.inactivityTimerInMs
+              ? "text-red-700 dark:text-red-500"
+              : "text-gray-900 dark:text-white")
+          }
+        >
+          Inactivity Timer In Ms&nbsp;
+          <small>
+            (amount of inactivity since choosing new monarch where we'll wait
+            for activity [or a new monarch will be chosen])
+          </small>
+        </label>
+        <input
+          title="inactivityTimerInMs"
+          type="number"
+          name="inactivityTimerInMs"
+          onChange={form.handleChange}
+          onBlur={form.handleBlur}
+          value={form.values.inactivityTimerInMs}
+          className={
+            form.errors.inactivityTimerInMs && form.touched.inactivityTimerInMs
+              ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500"
+              : "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          }
+        />
+        {form.errors.inactivityTimerInMs &&
+          form.touched.inactivityTimerInMs && (
+            <div className="mt-2 text-sm text-red-600 dark:text-red-500">
+              {form.errors.inactivityTimerInMs}
+            </div>
+          )}
       </div>
 
       <div className="mb-5">

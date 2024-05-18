@@ -4,20 +4,26 @@ import {
   LiveChatContinuation,
   UniversalCache,
   YTNodes,
-  // eslint-disable-next-line import/no-unresolved
 } from "youtubei.js";
+import { LiveChatTextMessage } from "youtubei.js/dist/src/parser/nodes";
 import YTChat, {
   ChatAction,
 } from "youtubei.js/dist/src/parser/youtube/LiveChat";
+import { modCommands } from "../../../shared/constants";
 import { IPC } from "../../../shared/ipc-commands";
-import { ChatMessage } from "../../../shared/types";
+import { ChatMessage, Mode } from "../../../shared/types";
 import { AnarchyHandler } from "../handler/anarchy-handler";
 import { DemocracyHandler } from "../handler/democracy-handler";
 import { IGameplayHandler } from "../handler/gameplay-handler";
 import { MonarchyHandler } from "../handler/monarchy-handler";
-import { StoreType } from "../typing";
 import { NamesHandler } from "../handler/names-handler";
-import { getRandomChatInput, getRandomPkmnName } from "../utils";
+import { StoreType } from "../typing";
+import {
+  getRandomChatInput,
+  getRandomPkmnName,
+  isValidCommand,
+  tapKey,
+} from "../utils";
 
 export class LiveChat {
   config: StoreType;
@@ -43,46 +49,7 @@ export class LiveChat {
 
     this.liveChat = info.getLiveChat();
 
-    switch (this.config.settings.mode) {
-      case "democracy":
-        this.handler = new DemocracyHandler(
-          {
-            timeOutInMs: this.config.settings.democracyCountdown,
-            streamDelay: this.config.settings.streamDelay,
-            buttonPreset: this.config.settings.buttonPreset,
-          },
-          this.mainWindow
-        );
-        break;
-      case "monarchy":
-        this.handler = new MonarchyHandler(
-          {
-            timeOutInMs: this.config.settings.normalInterval,
-            monarchTimerInMs: this.config.settings.monarchyCooldown,
-            monarchThreshold: this.config.settings.monarchyThreshold,
-            buttonPreset: this.config.settings.buttonPreset,
-          },
-          this.mainWindow
-        );
-        break;
-      case "anarchy":
-        this.handler = new AnarchyHandler(
-          {
-            timeOutInMs: this.config.settings.normalInterval,
-            streamDelay: this.config.settings.streamDelay,
-            buttonPreset: this.config.settings.buttonPreset,
-          },
-          this.mainWindow
-        );
-        break;
-      case "names":
-        this.handler = new NamesHandler(
-          {
-            timeOutInMs: this.config.settings.normalInterval,
-          },
-          this.mainWindow
-        );
-    }
+    this.attachHandler(this.config.settings.mode);
 
     console.log("[YTPlays] Adding listeners");
     this.liveChat.once("start", (_) => {
@@ -134,30 +101,34 @@ export class LiveChat {
       });
 
       switch (item.type) {
-        case "LiveChatTextMessage":
-          // eslint-disable-next-line no-case-declarations
+        case "LiveChatTextMessage": {
           const ytmsg = item.as(YTNodes.LiveChatTextMessage);
-          // eslint-disable-next-line no-case-declarations
-          const chatMsg: ChatMessage = {
-            message: ytmsg.message.toString().toLowerCase(),
-            timestamp: new Date(
-              ytmsg.hasKey("timestamp") ? ytmsg.timestamp : Date.now()
-            ),
-            username: ytmsg.author.name,
-          };
 
-          console.log(
-            `[YTPlays] Got chat: [${chatMsg.username}] ${chatMsg.message}`
-          );
+          if (this.isValidModCommand(ytmsg)) {
+            this.executeModCommand(ytmsg.message.toString().toLowerCase());
+          } else {
+            const chatMsg: ChatMessage = {
+              message: ytmsg.message.toString().toLowerCase(),
+              timestamp: new Date(
+                ytmsg.hasKey("timestamp") ? ytmsg.timestamp : Date.now()
+              ),
+              username: ytmsg.author.name,
+            };
 
-          // if (!app.isPackaged)
-          //   chatMsg.message =
-          //     this.config.settings.mode == "names"
-          //       ? getRandomPkmnName()
-          //       : getRandomChatInput(this.config.settings.buttonPreset);
+            console.log(
+              `[YTPlays] Got chat: [${chatMsg.username}] ${chatMsg.message}`
+            );
 
-          this.handler.handleChatMessage(chatMsg);
+            // if (!app.isPackaged)
+            //   chatMsg.message =
+            //     this.config.settings.mode == "names"
+            //       ? getRandomPkmnName()
+            //       : getRandomChatInput(this.config.settings.buttonPreset);
+
+            this.handler?.handleChatMessage(chatMsg);
+          }
           break;
+        }
         case "LiveChatPaidMessage":
           console.info(
             `${hours} - ${item
@@ -181,5 +152,136 @@ export class LiveChat {
 
   exit(): void {
     this.handler?.exit();
+  }
+
+  private isValidModCommand(ytmsg: LiveChatTextMessage): boolean {
+    if (ytmsg.author.is_moderator || ytmsg.author.name == "thmo_") {
+      const message = ytmsg.message.toString();
+      if (message.startsWith("!")) return true;
+    }
+
+    return false;
+  }
+
+  private executeModCommand(commandMessage: string) {
+    const [command, ...commandArgs] = commandMessage.split(" ");
+    console.log("[YTPlays] MOD COMMAND", command, commandArgs);
+
+    switch (command) {
+      case modCommands.setMode: {
+        if (
+          commandArgs.length > 0 &&
+          ["monarchy", "democracy", "anarchy"].indexOf(commandArgs[0]) != -1
+        ) {
+          this.config.settings.mode = commandArgs[0] as Mode;
+          this.handler?.exit();
+          this.mainWindow.webContents.send(IPC.MAIN.CONFIG, {
+            videoId: this.config.video.id,
+            ...this.config.settings,
+          });
+          this.attachHandler(this.config.settings.mode);
+        }
+        break;
+      }
+      case modCommands.setMonarch: {
+        if (this.handler instanceof MonarchyHandler && commandArgs.length > 0) {
+          const timeOut =
+            commandArgs.length > 1 ? parseInt(commandArgs[1]) : null;
+          this.handler.setMonarch(commandArgs[0], timeOut);
+        }
+        break;
+      }
+      case modCommands.setStreamDelay: {
+        if (commandArgs.length > 0) {
+          const delay = parseInt(commandArgs[0]);
+          if (delay > 0) {
+            this.config.settings.streamDelay = delay;
+            this.handler?.exit();
+            this.mainWindow.webContents.send(IPC.MAIN.CONFIG, {
+              videoId: this.config.video.id,
+              ...this.config.settings,
+            });
+            this.attachHandler(this.config.settings.mode);
+          }
+        }
+        break;
+      }
+      case modCommands.setTimeout: {
+        if (commandArgs.length > 0) {
+          const delay = parseInt(commandArgs[0]);
+          if (delay > 0) {
+            switch (this.config.settings.mode) {
+              case "anarchy":
+              case "monarchy":
+              case "names":
+                this.config.settings.normalInterval = delay;
+                break;
+              case "democracy":
+                this.config.settings.democracyCountdown = delay;
+            }
+            this.handler?.exit();
+            this.mainWindow.webContents.send(IPC.MAIN.CONFIG, {
+              videoId: this.config.video.id,
+              ...this.config.settings,
+            });
+            this.attachHandler(this.config.settings.mode);
+          }
+        }
+        break;
+      }
+      case modCommands.press: {
+        if (
+          commandArgs.length > 0 &&
+          isValidCommand(commandArgs[0], this.config.settings.buttonPreset)
+        ) {
+          tapKey(commandArgs[0], this.config.settings.buttonPreset);
+        }
+        break;
+      }
+    }
+  }
+
+  private attachHandler(mode: Mode): void {
+    switch (mode) {
+      case "democracy":
+        this.handler = new DemocracyHandler(
+          {
+            timeOutInMs: this.config.settings.democracyCountdown,
+            streamDelay: this.config.settings.streamDelay,
+            buttonPreset: this.config.settings.buttonPreset,
+          },
+          this.mainWindow
+        );
+        break;
+      case "monarchy":
+        this.handler = new MonarchyHandler(
+          {
+            timeOutInMs: this.config.settings.normalInterval,
+            monarchTimerInMs: this.config.settings.monarchyCooldown,
+            monarchThreshold: this.config.settings.monarchyThreshold,
+            inactivityTimerInMs: this.config.settings.inactivityTimerInMs,
+            buttonPreset: this.config.settings.buttonPreset,
+          },
+          this.mainWindow
+        );
+        break;
+      case "anarchy":
+        this.handler = new AnarchyHandler(
+          {
+            timeOutInMs: this.config.settings.normalInterval,
+            streamDelay: this.config.settings.streamDelay,
+            buttonPreset: this.config.settings.buttonPreset,
+          },
+          this.mainWindow
+        );
+        break;
+      case "names":
+        this.handler = new NamesHandler(
+          {
+            timeOutInMs: this.config.settings.normalInterval,
+          },
+          this.mainWindow
+        );
+    }
   }
 }
