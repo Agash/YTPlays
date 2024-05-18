@@ -78,26 +78,27 @@ _**Note: It might take a couple of seconds for the LiveChat to load and start pr
 
 #### Mod commands:
 
-- **!setmode {mode}**
-  Where **{mode}** (required parameter) is either one of the supported modes (democracy, anarchy, monarchy)
+- **!setmode {mode}**<br/>
+  Where **{mode}** (required parameter) is either one of the supported modes (democracy, anarchy, monarchy)<br/>
   _Example: !setmode democracy_
 
-- **!setmonarch {username} {timeInMs}**
-  Where **{username}** (required parameter) is a valid full username as they appear in chat (with or without @) and **{timeInMs}** (optional parameter) is the amount of time in milliseconds given for the monarchy, after which the normal schedule will continue. If not set, the default timeout from the settings will be used
-  _Example: !setmonarch thmo\_ 120000_
+- **!setmonarch {username} {timeInMs}**<br/>
+  Where **{username}** (required parameter) is a valid full username as they appear in chat (with or without @) and **{timeInMs}** (optional parameter) is the amount of time in milliseconds given for the monarchy, after which the normal schedule will continue. If not set, the default timeout from the settings will be used.<br/>
+**CURRENTLY BUGGED WITH USERNAMES WITH WHITESPACES IN THEM**<br/>
+  _Example: !setmonarch thmo\_ 120000_<br/>
   _Example2: !setmonarch @thmo\__
 
-- **!setstreamdelay {delayInMs}**
-  Where **{delayInMs}** (required parameter) is the amount of stream delay in milliseconds, this setting is the same as the one in settings and will overwrite it accordingly.
+- **!setstreamdelay {delayInMs}**<br/>
+  Where **{delayInMs}** (required parameter) is the amount of stream delay in milliseconds, this setting is the same as the one in settings and will overwrite it accordingly.<br/>
   _Example: !setstreamdelay 2500_
 
-- **!setTimeout {timeOutInMs}**
-  Where **{timeOutInMs}** (required parameter) is the amount of timeout in milliseconds, during which commands are collected before being processed. This setting correlates with "Normal Timeout" in Monarchy and Anarchy mode and "Democracy Countdown" in Democracy mode.
+- **!setTimeout {timeOutInMs}**<br/>
+  Where **{timeOutInMs}** (required parameter) is the amount of timeout in milliseconds, during which commands are collected before being processed. This setting correlates with "Normal Timeout" in Monarchy and Anarchy mode and "Democracy Countdown" in Democracy mode.<br/>
   _Example: !settimeout 2500_
 
-- **!press {command}**
-  Where **{command}** (required parameter) is the command to be executed. These can be any of the button mappings in the currently active button preset.
-  _Example: !settimeout 2500_
+- **!press {command}**<br/>
+  Where **{command}** (required parameter) is the command to be executed. These can be any of the button mappings in the currently active button preset.<br/>
+  _Example: !press up_
 
 ## :white_check_mark: Todos
 
