@@ -53,3 +53,16 @@ index 45ddfd6..77a172c 100644
              if (this.running)
                  __classPrivateFieldGet(this, _LiveChat_instances, "m", _LiveChat_pollMetadata).call(this);
          }
+diff --git a/node_modules/youtubei.js/dist/src/parser/youtube/SmoothedQueue.js b/node_modules/youtubei.js/dist/src/parser/youtube/SmoothedQueue.js
+index 25e78c4..7026582 100644
+--- a/node_modules/youtubei.js/dist/src/parser/youtube/SmoothedQueue.js
++++ b/node_modules/youtubei.js/dist/src/parser/youtube/SmoothedQueue.js
+@@ -72,7 +72,7 @@ class SmoothedQueue {
+     emitSmoothedActions() {
+         __classPrivateFieldSet(this, _SmoothedQueue_next_update_id, null, "f");
+         if (__classPrivateFieldGet(this, _SmoothedQueue_action_queue, "f").length) {
+-            let delay = 1E4;
++            let delay = 1E4 / 20;
+             if (__classPrivateFieldGet(this, _SmoothedQueue_estimated_update_interval, "f") !== null && __classPrivateFieldGet(this, _SmoothedQueue_last_update_time, "f") !== null) {
+                 delay = __classPrivateFieldGet(this, _SmoothedQueue_estimated_update_interval, "f") - Date.now() + __classPrivateFieldGet(this, _SmoothedQueue_last_update_time, "f");
+             }
