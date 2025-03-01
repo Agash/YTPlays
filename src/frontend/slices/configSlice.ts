@@ -17,12 +17,12 @@ const initialState: ConfigState = {
   videoId: "",
   mode: "democracy",
   buttonPreset: "normal",
-  democracyCountdown: 15000,
-  monarchyCooldown: 25000,
+  democracyCountdown: 3500,
+  monarchyCooldown: 10000,
   monarchyThreshold: 2,
   inactivityTimerInMs: 1500,
   normalInterval: 1500,
-  streamDelay: 1500,
+  streamDelay: 200,
 };
 
 const configSlice = createSlice({
