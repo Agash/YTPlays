@@ -95,7 +95,7 @@ _**Note: It might take a couple of seconds for the LiveChat to load and start pr
   Where **{timeOutInMs}** (required parameter) is the amount of timeout in milliseconds, during which commands are collected before being processed. This setting correlates with "Normal Timeout" in Monarchy and Anarchy mode and "Democracy Countdown" in Democracy mode.<br/>
   _Example: !settimeout 2500_
 
-- **!ignore {command}**<br/>
+- **!ignore {username}**<br/>
   Where **{username}** (required parameter) is a valid full username as they appear in chat (with or without @).<br/>
   _Example: !ignore @thmo\__
 
