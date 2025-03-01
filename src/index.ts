@@ -58,7 +58,7 @@ const store = new Store<StoreType>({
         },
         buttonPreset: {
           type: "string",
-          enum: ["normal", "pokerogue"],
+          enum: ["normal", "pokerogue", "custom"],
           default: "normal",
         },
         democracyCountdown: {

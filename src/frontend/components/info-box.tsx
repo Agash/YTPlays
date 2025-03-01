@@ -21,7 +21,8 @@ function KeyMappings() {
       <Table isCompact aria-label="Current batch and the count of commands">
         <TableHeader>
           <TableColumn key="button">Button</TableColumn>
-          <TableColumn key="input">Input</TableColumn>
+          <TableColumn key="input">Chat Input</TableColumn>
+          <TableColumn key="key">Keybinding</TableColumn>
         </TableHeader>
         <TableBody>
           {mappings.map((mapping, idx) => (
@@ -32,6 +33,7 @@ function KeyMappings() {
                 </Kbd>
               </TableCell>
               <TableCell>{mapping.input}</TableCell>
+              <TableCell>{mapping.button.toUpperCase()}</TableCell>
             </TableRow>
           ))}
         </TableBody>

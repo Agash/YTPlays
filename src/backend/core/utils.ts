@@ -1,5 +1,5 @@
 import { app } from "electron";
-import { keyTap, setKeyboardDelay, typeString } from "robotjs";
+import { keyTap, setKeyboardDelay, typeString } from "@hurdlegroup/robotjs";
 import { buttonMapping, pokeRogueButtonMapping } from "../../shared/constants";
 import pkmnNames from "./pkmn.json";
 import { ButtonPreset } from "../../shared/types";
@@ -31,7 +31,8 @@ const tapKey = (key: string, buttonPreset: ButtonPreset = "normal") => {
     return;
   }
 
-  if (app.isPackaged) keyTap(mapping.button);
+  if (app.isPackaged) keyTap(mapping.button)
+  else console.debug("[YTPlays] Pressing key: ", mapping.button);
 };
 
 const typeName = (pkmnName: string) => {

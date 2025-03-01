@@ -1,13 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import configReducer from "../slices/configSlice";
-import queueSlice from "../slices/queueSlice";
-import handlerSlice from "../slices/handlerSlice";
+import queueReducer from "../slices/queueSlice";
+import handlerReducer from "../slices/handlerSlice";
 
 const store = configureStore({
   reducer: {
     config: configReducer,
-    queue: queueSlice,
-    handler: handlerSlice,
+    queue: queueReducer,
+    handler: handlerReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

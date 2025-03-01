@@ -161,6 +161,7 @@ const modCommands = {
   setMonarch: "!setmonarch",
   setTimeout: "!settimeout",
   press: "!press",
+  ignore: "!ignore"
 };
 
 export { ButtonMapping, buttonMapping, pokeRogueButtonMapping, modCommands };
