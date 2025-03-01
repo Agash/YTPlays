@@ -31,6 +31,7 @@ export class LiveChat {
   handler: IGameplayHandler;
   liveChat: YTChat;
   mainWindow: BrowserWindow;
+  bannedUsers: Set<string> = new Set();
 
   async start(mainWindow: BrowserWindow, config: StoreType) {
     this.mainWindow = mainWindow;
@@ -99,6 +100,9 @@ export class LiveChat {
           if (this.isValidModCommand(ytmsg)) {
             this.executeModCommand(ytmsg.message.toString());
           } else {
+            if (this.bannedUsers.has(ytmsg.author.name))
+              break;
+
             const chatMsg: ChatMessage = {
               message: ytmsg.message.toString().toLowerCase(),
               timestamp: new Date(
@@ -122,9 +126,9 @@ export class LiveChat {
             `${hours} - ${item
               .as(YTNodes.LiveChatPaidMessage)
               .author.name.toString()}:\n` +
-              `${item.as(YTNodes.LiveChatPaidMessage).purchase_amount}: ${item
-                .as(YTNodes.LiveChatPaidMessage)
-                .message.toString()}\n`
+            `${item.as(YTNodes.LiveChatPaidMessage).purchase_amount}: ${item
+              .as(YTNodes.LiveChatPaidMessage)
+              .message.toString()}\n`
           );
           break;
         default:
@@ -227,6 +231,18 @@ export class LiveChat {
             });
             this.attachHandler(this.config.settings.mode);
           }
+        }
+        break;
+      }
+      case modCommands.ignore: {
+        if (commandArgs.length > 0) {
+          let username = commandMessage.substring(
+            `${modCommands.ignore} `.length
+          );
+          username = username.startsWith("@")
+            ? username.substring(1)
+            : username;
+          this.bannedUsers.add(username);
         }
         break;
       }

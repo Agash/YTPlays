@@ -84,7 +84,6 @@ _**Note: It might take a couple of seconds for the LiveChat to load and start pr
 
 - **!setmonarch {username} {timeInMs}**<br/>
   Where **{username}** (required parameter) is a valid full username as they appear in chat (with or without @) and **{timeInMs}** (optional parameter) is the amount of time in milliseconds given for the monarchy, after which the normal schedule will continue. If not set, the default timeout from the settings will be used.<br/>
-**CURRENTLY BUGGED WITH USERNAMES WITH WHITESPACES IN THEM**<br/>
   _Example: !setmonarch thmo\_ 120000_<br/>
   _Example2: !setmonarch @thmo\__
 
@@ -95,6 +94,10 @@ _**Note: It might take a couple of seconds for the LiveChat to load and start pr
 - **!setTimeout {timeOutInMs}**<br/>
   Where **{timeOutInMs}** (required parameter) is the amount of timeout in milliseconds, during which commands are collected before being processed. This setting correlates with "Normal Timeout" in Monarchy and Anarchy mode and "Democracy Countdown" in Democracy mode.<br/>
   _Example: !settimeout 2500_
+
+- **!ignore {command}**<br/>
+  Where **{username}** (required parameter) is a valid full username as they appear in chat (with or without @).<br/>
+  _Example: !ignore @thmo\__
 
 - **!press {command}**<br/>
   Where **{command}** (required parameter) is the command to be executed. These can be any of the button mappings in the currently active button preset.<br/>
