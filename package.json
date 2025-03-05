@@ -10,8 +10,7 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "set GITHUB_TOKEN=%GITHUB_YTPlays% && electron-forge publish",
-    "lint": "eslint ./src/",
-    "postinstall": "patch-package"
+    "lint": "eslint ./src/"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.3.1",

@@ -18,10 +18,7 @@ import { IGameplayHandler } from "../handler/gameplay-handler";
 import { MonarchyHandler } from "../handler/monarchy-handler";
 import { NamesHandler } from "../handler/names-handler";
 import { StoreType } from "../typing";
-import {
-  isValidCommand,
-  tapKey,
-} from "../utils";
+import { tapKey } from "../utils";
 
 export class LiveChat {
   streamer: string;

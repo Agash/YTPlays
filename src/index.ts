@@ -1,9 +1,9 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import Store from "electron-store";
-import installExtension, {
-  REACT_DEVELOPER_TOOLS,
-  REDUX_DEVTOOLS,
-} from "electron-devtools-installer";
+// import installExtension, {
+//   REACT_DEVELOPER_TOOLS,
+//   REDUX_DEVTOOLS,
+// } from "electron-devtools-installer";
 import { updateElectronApp } from "update-electron-app";
 import { StoreType } from "./backend/core/typing";
 import { LiveChat } from "./backend/core/yt/live-chat";
@@ -43,12 +43,12 @@ const store = new Store<StoreType>({
       default: {
         mode: "democracy",
         buttonPreset: "normal",
-        democracyCountdown: 15000,
+        democracyCountdown: 3500,
         monarchyCooldown: 25000,
         monarchyThreshold: 2,
         inactivityTimerInMs: 1500,
         normalInterval: 1500,
-        streamDelay: 1500,
+        streamDelay: 150,
       },
       properties: {
         mode: {
@@ -63,7 +63,7 @@ const store = new Store<StoreType>({
         },
         democracyCountdown: {
           type: "number",
-          default: 15000,
+          default: 3500,
         },
         monarchyCooldown: {
           type: "number",
@@ -83,7 +83,7 @@ const store = new Store<StoreType>({
         },
         streamDelay: {
           type: "number",
-          default: 1500,
+          default: 150,
         },
       },
       required: ["mode"],
@@ -97,7 +97,7 @@ const createWindow = (): BrowserWindow => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     height: 600,
-    width: 700,
+    width: 770,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
