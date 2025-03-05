@@ -26,6 +26,7 @@ import {
 } from "../utils";
 
 export class LiveChat {
+  streamer: string;
   config: StoreType;
   videoId: string;
   handler: IGameplayHandler;
@@ -48,12 +49,17 @@ export class LiveChat {
     this.attachHandler(this.config.settings.mode);
 
     this.liveChat.once("start", (_) => {
+      // Get all chat, not just TOP
       this.liveChat.applyFilter("LIVE_CHAT");
     });
+
     this.liveChat.on("start", (initial_data: LiveChatContinuation) =>
+      // load initial chat data (bulk messages)
       this.handleContinuation(initial_data)
     );
+
     this.liveChat.on("chat-update", (action: ChatAction) =>
+      // handle incoming singular chat messages
       this.handleChatUpdate(action)
     );
 
@@ -70,6 +76,11 @@ export class LiveChat {
      * Initial info is what you see when you first open a Live Chat — this is; initial actions (pinned messages, top donations..), account's info and so on.
      */
     console.info("[YTPlays] Started LiveChat", initial_data);
+
+    var owner = initial_data.participants_list.participants.find(p => p.badges.find(b => b.hasKey("icon_type") && b.icon_type == "OWNER"));
+    if(owner){
+      this.streamer = owner.name.toString();
+    }
   }
 
   handleChatUpdate(action: ChatAction) {
@@ -77,8 +88,6 @@ export class LiveChat {
      * An action represents what is being added to
      * the live chat. All actions have a `type` property,
      * including their item (if the action has an item).
-     *
-     * Below are a few examples of how this can be used.
      */
     if (action.is(YTNodes.AddChatItemAction)) {
       const item = action.as(YTNodes.AddChatItemAction).item;
@@ -150,7 +159,7 @@ export class LiveChat {
     if (
       ytmsg.author.is_moderator ||
       ytmsg.author.id == "UCaB_PrFSBtCtRbLBkDXoGtQ" ||
-      ytmsg.author.name == "Astroid Videos"
+      ytmsg.author.name == this.streamer
     ) {
       const message = ytmsg.message.toString();
       if (message.startsWith("!")) return true;
