@@ -12,8 +12,7 @@ const isValidCommand = (
 ) => {
   const mappings =
     buttonPreset == "pokerogue" ? pokeRogueButtonMapping : buttonMapping;
-  const validCommands = mappings.map((m) => m.input);
-  return validCommands.includes(message);
+  return mappings.map((m) => m.input).includes(message);
 };
 
 const isValidPkmnName = (message: string) => {

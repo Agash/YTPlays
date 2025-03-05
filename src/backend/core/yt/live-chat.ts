@@ -1,4 +1,4 @@
-import { BrowserWindow, app } from "electron";
+import { BrowserWindow } from "electron";
 import {
   Innertube,
   LiveChatContinuation,
@@ -19,8 +19,6 @@ import { MonarchyHandler } from "../handler/monarchy-handler";
 import { NamesHandler } from "../handler/names-handler";
 import { StoreType } from "../typing";
 import {
-  getRandomChatInput,
-  getRandomPkmnName,
   isValidCommand,
   tapKey,
 } from "../utils";
@@ -78,7 +76,7 @@ export class LiveChat {
     console.info("[YTPlays] Started LiveChat", initial_data);
 
     var owner = initial_data.participants_list.participants.find(p => p.badges.find(b => b.hasKey("icon_type") && b.icon_type == "OWNER"));
-    if(owner){
+    if (owner) {
       this.streamer = owner.name.toString();
     }
   }
@@ -119,12 +117,6 @@ export class LiveChat {
               ),
               username: ytmsg.author.name,
             };
-
-            // if (!app.isPackaged)
-            //   chatMsg.message =
-            //     this.config.settings.mode == "names"
-            //       ? getRandomPkmnName()
-            //       : getRandomChatInput(this.config.settings.buttonPreset);
 
             this.handler?.handleChatMessage(chatMsg);
           }
@@ -256,11 +248,8 @@ export class LiveChat {
         break;
       }
       case modCommands.press: {
-        if (
-          commandArgs.length > 0 &&
-          isValidCommand(commandArgs[0], this.config.settings.buttonPreset)
-        ) {
-          tapKey(commandArgs[0], this.config.settings.buttonPreset);
+        if (commandArgs.length > 0) {
+          commandArgs.forEach(commandArg => tapKey(commandArg, this.config.settings.buttonPreset));
         }
         break;
       }
