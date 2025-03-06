@@ -42,16 +42,27 @@ export class DemocracyHandler implements IGameplayHandler {
   }
 
   private handleMessages(): void {
-    const commands = [...this.queue.commandStatistics.keys()];
-    if (commands.length > 0) {
-      const mostPopularCommand = commands.reduce((a, b) =>
+    const allcurrentCommands = [...this.queue.commandStatistics.keys()];
+    if (allcurrentCommands.length > 0) {
+      const mostPopularCommand = allcurrentCommands.reduce((a, b) =>
         this.queue.commandStatistics.get(a) >
         this.queue.commandStatistics.get(b)
           ? a
           : b
       );
 
-      tapKey(mostPopularCommand, this.config.buttonPreset);
+      const commands = mostPopularCommand.split(" ");
+
+      if (commands.length > 0) {
+        tapKey(commands[0], this.config.buttonPreset);
+  
+        // handle subsequent commands
+        for (let i = 1; i < commands.length; i++) {
+          setTimeout(() => {
+            tapKey(commands[i], this.config.buttonPreset);
+          }, i * 500);
+        }
+      }
 
       this.window.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, {
         message: mostPopularCommand,

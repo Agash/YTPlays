@@ -24,27 +24,29 @@ export class CommandQueue implements IQueue {
 
   // Add a valid message to the queue
   enqueue(chatMsg: ChatMessage): void {
-    if (isValidCommand(chatMsg.message, this.buttonPreset)) {
-      this.messages.push(chatMsg);
+    const possibleCommands = chatMsg.message.split(" ");
+    if (!possibleCommands.every(command => isValidCommand(command, this.buttonPreset)))
+      return;
 
-      this.commandStatistics.set(
-        chatMsg.message,
-        (this.commandStatistics.get(chatMsg.message) || 0) + 1
-      );
-      this.window.webContents.send(
-        IPC.QUEUE.COMMAND_STATISTICS.UPDATE,
-        this.commandStatistics
-      );
+    this.messages.push(chatMsg);
 
-      this.userStatistics.set(
-        chatMsg.username,
-        (this.userStatistics.get(chatMsg.username) || 0) + 1
-      );
-      this.window.webContents.send(
-        IPC.QUEUE.USER_STATISTICS.UPDATE,
-        this.userStatistics
-      );
-    }
+    this.commandStatistics.set(
+      chatMsg.message,
+      (this.commandStatistics.get(chatMsg.message) || 0) + 1
+    );
+    this.window.webContents.send(
+      IPC.QUEUE.COMMAND_STATISTICS.UPDATE,
+      this.commandStatistics
+    );
+
+    this.userStatistics.set(
+      chatMsg.username,
+      (this.userStatistics.get(chatMsg.username) || 0) + 1
+    );
+    this.window.webContents.send(
+      IPC.QUEUE.USER_STATISTICS.UPDATE,
+      this.userStatistics
+    );
   }
 
   // Get all messages from a specific user

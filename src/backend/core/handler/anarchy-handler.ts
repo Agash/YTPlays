@@ -42,7 +42,18 @@ export class AnarchyHandler implements IGameplayHandler {
     const nextCommand = this.queue.messages.shift();
     if (!nextCommand) return;
 
-    tapKey(nextCommand?.message, this.config.buttonPreset);
+    const commands = nextCommand.message.split(" ");
+
+    if (commands.length > 0) {
+      tapKey(commands[0], this.config.buttonPreset);
+
+      // handle subsequent commands
+      for (let i = 1; i < commands.length; i++) {
+        setTimeout(() => {
+          tapKey(commands[i], this.config.buttonPreset);
+        }, i * 500);
+      }
+    }
 
     this.window.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, nextCommand);
 

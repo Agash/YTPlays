@@ -79,11 +79,40 @@ export class MonarchyHandler implements IGameplayHandler {
 
   private handleMessages(): void {
     const monarchMessages = this.queue.getMessagesFromUser(this.currentMonarch);
+    if(monarchMessages.length === 0) return;
 
-    for (const command of monarchMessages) {
-      tapKey(command.message, this.config.buttonPreset);
-      this.lastExecuted = command;
-      this.window.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, command);
+    const firstCommands = monarchMessages[0].message.split(" ");
+
+    if (firstCommands.length > 0) {
+      tapKey(firstCommands[0], this.config.buttonPreset);
+
+      // handle subsequent commands
+      for (let j = 1; j < firstCommands.length; j++) {
+        setTimeout(() => {
+          tapKey(firstCommands[j], this.config.buttonPreset);
+        }, j * 500);
+      }
+      
+      this.lastExecuted = monarchMessages[0];
+      this.window.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, monarchMessages[0]);
+    } 
+
+    for (let i = 1; i < monarchMessages.length; i++){
+      const commands = monarchMessages[i].message.split(" ");
+
+      if (commands.length > 0) {
+        tapKey(commands[0], this.config.buttonPreset);
+  
+        // handle subsequent commands
+        for (let j = 1; j < commands.length; j++) {
+          setTimeout(() => {
+            tapKey(commands[j], this.config.buttonPreset);
+          }, j * 500);
+        }
+        
+        this.lastExecuted = monarchMessages[i];
+        this.window.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, monarchMessages[i]);
+      }  
     }
 
     this.queue.clear();

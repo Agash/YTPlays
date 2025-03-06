@@ -245,14 +245,15 @@ export class LiveChat {
         break;
       }
       case modCommands.press: {
-        if(commandArgs.length == 1) {
+        if (commandArgs.length > 0) {
           tapKey(commandArgs[0], this.config.settings.buttonPreset);
-        } else if (commandArgs.length > 1) {
-          commandArgs.forEach((commandArg, i) => {
+    
+          // handle subsequent commands
+          for (let i = 1; i < commandArgs.length; i++) {
             setTimeout(() => {
-              tapKey(commandArg, this.config.settings.buttonPreset);
-            }, i * 500)
-          });
+              tapKey(commandArgs[i], this.config.settings.buttonPreset);
+            }, i * 500);
+          }
         }
         break;
       }
