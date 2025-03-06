@@ -104,7 +104,7 @@ export class LiveChat {
           if (this.isValidModCommand(ytmsg)) {
             this.executeModCommand(ytmsg.message.toString());
           } else {
-            if (this.bannedUsers.has(ytmsg.author.name))
+            if (this.bannedUsers.has(ytmsg.author.name.trim()))
               break;
 
             const chatMsg: ChatMessage = {
@@ -240,7 +240,7 @@ export class LiveChat {
           username = username.startsWith("@")
             ? username.substring(1)
             : username;
-          this.bannedUsers.add(username);
+          this.bannedUsers.add(username.trim());
         }
         break;
       }
