@@ -36,8 +36,7 @@ const tapKey = (key: string, buttonPreset: ButtonPreset = "normal") => {
 
 const typeName = (pkmnName: string) => {
   if (app.isPackaged) typeString(pkmnName);
-
-  // typeString(pkmnName);
+  else console.debug("[YTPlays] Typing: ", pkmnName);
 };
 
 const getRandomChatInput = (buttonPreset: ButtonPreset = "normal"): string => {
