@@ -1,7 +1,7 @@
 {
   "name": "ytplays",
   "productName": "YTPlays",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Uses the LiveChat of YouTube to send keyboard keys or strings to the currently active window, made specifically for Pokemon and PokeTubers",
   "main": ".webpack/main",
   "repository": "https://github.com/Agash/YTPlays",
