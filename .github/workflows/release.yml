@@ -25,5 +25,5 @@ jobs:
 
       - name: Publish Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_YTPlays: ${{ secrets.GITHUB_TOKEN }}
         run: npm run publish

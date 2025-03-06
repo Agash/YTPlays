@@ -31,6 +31,7 @@ const config: ForgeConfig = {
           owner: "Agash",
           name: "YTPlays",
         },
+        draft: true,
         prerelease: true,
       },
     },
