@@ -16,7 +16,10 @@ export class AnarchyHandler implements IGameplayHandler {
   constructor(config: AnarchyHandlerConfig, window: BrowserWindow) {
     this.config = config;
     this.window = window;
-    this.timer = setInterval(() => this.handleMessages(), config.timeOutInMs);
+    this.timer = setInterval(
+      () => this.handleMessages(),
+      config.timeOutInMs + config.streamDelay
+    );
     this.queue = new CommandQueue(window, config.buttonPreset);
   }
 
@@ -57,8 +60,11 @@ export class AnarchyHandler implements IGameplayHandler {
 
     this.window.webContents.send(IPC.HANDLER.EXECUTED_COMMAND, nextCommand);
 
-    this.acceptMessages = false;
-    setTimeout(() => this.switchAcceptMessages(), this.config.streamDelay);
+    if (this.config.streamDelay > 0) {
+      this.acceptMessages = false;
+      setTimeout(() => this.switchAcceptMessages(), this.config.streamDelay);
+    }
+
     this.queue.clear();
   }
 }

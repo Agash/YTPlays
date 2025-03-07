@@ -46,7 +46,7 @@ export class DemocracyHandler implements IGameplayHandler {
     if (allcurrentCommands.length > 0) {
       const mostPopularCommand = allcurrentCommands.reduce((a, b) =>
         this.queue.commandStatistics.get(a) >
-        this.queue.commandStatistics.get(b)
+          this.queue.commandStatistics.get(b)
           ? a
           : b
       );
@@ -55,7 +55,7 @@ export class DemocracyHandler implements IGameplayHandler {
 
       if (commands.length > 0) {
         tapKey(commands[0], this.config.buttonPreset);
-  
+
         // handle subsequent commands
         for (let i = 1; i < commands.length; i++) {
           setTimeout(() => {
@@ -69,8 +69,11 @@ export class DemocracyHandler implements IGameplayHandler {
       });
     }
 
-    this.acceptMessages = false;
-    setTimeout(() => this.switchAcceptMessages(), this.config.streamDelay);
+    if (this.config.streamDelay > 0) {
+      this.acceptMessages = false;
+      setTimeout(() => this.switchAcceptMessages(), this.config.streamDelay);
+    }
+
     this.queue.clear(true);
   }
 }
