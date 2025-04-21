@@ -5,11 +5,12 @@ import { BrowserWindow } from "electron";
 import { IPC } from "../../../shared/ipc-commands";
 
 // Create a class for the filtered queue
-export class PkmnQueue implements IQueue {
+export class ShowdownQueue implements IQueue {
   window: BrowserWindow;
   public commandStatistics: QueueStatistics = new Map<string, number>();
   public userStatistics: QueueStatistics = new Map<string, number>();
   public messages: ChatMessage[] = [];
+  validCommands: Set<string> = new Set([]);
 
   constructor(window: BrowserWindow) {
     this.window = window;
@@ -17,7 +18,7 @@ export class PkmnQueue implements IQueue {
 
   // Add a valid message to the queue
   enqueue(chatMsg: ChatMessage): void {
-    if (isValidPkmnName(chatMsg.message)) {
+    if (this.validCommands.has(chatMsg.message)) {
       this.messages.push(chatMsg);
 
       this.commandStatistics.set(

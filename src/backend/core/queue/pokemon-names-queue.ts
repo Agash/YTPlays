@@ -1,52 +1,50 @@
-import { BrowserWindow } from "electron";
-import {
-  ButtonPreset,
-  ChatMessage,
-  QueueStatistics,
-} from "../../../shared/types";
-import { isValidCommand } from "../utils";
+import { ChatMessage, QueueStatistics } from "../../../shared/types";
 import { IQueue } from "./queue";
+import { isValidPkmnName } from "../utils";
+import { BrowserWindow } from "electron";
 import { IPC } from "../../../shared/ipc-commands";
 
 // Create a class for the filtered queue
-export class CommandQueue implements IQueue {
+export class PokemonNamesQueue implements IQueue {
   window: BrowserWindow;
-  buttonPreset: ButtonPreset;
-
   public commandStatistics: QueueStatistics = new Map<string, number>();
   public userStatistics: QueueStatistics = new Map<string, number>();
   public messages: ChatMessage[] = [];
 
-  constructor(window: BrowserWindow, buttonPreset: ButtonPreset = "normal") {
+  constructor(window: BrowserWindow) {
     this.window = window;
-    this.buttonPreset = buttonPreset;
   }
 
   // Add a valid message to the queue
   enqueue(chatMsg: ChatMessage): void {
-    const possibleCommands = chatMsg.message.split(" ");
-    if (!possibleCommands.every(command => isValidCommand(command, this.buttonPreset)))
-      return;
+    if (isValidPkmnName(chatMsg.message)) {
+      this.messages.push(chatMsg);
 
-    this.messages.push(chatMsg);
+      this.commandStatistics.set(
+        chatMsg.message,
+        (this.commandStatistics.get(chatMsg.message) || 0) + 1
+      );
+      this.window.webContents.send(
+        IPC.QUEUE.COMMAND_STATISTICS.UPDATE,
+        this.commandStatistics
+      );
 
-    this.commandStatistics.set(
-      chatMsg.message,
-      (this.commandStatistics.get(chatMsg.message) || 0) + 1
-    );
-    this.window.webContents.send(
-      IPC.QUEUE.COMMAND_STATISTICS.UPDATE,
-      this.commandStatistics
-    );
+      this.userStatistics.set(
+        chatMsg.username,
+        (this.userStatistics.get(chatMsg.username) || 0) + 1
+      );
+      this.window.webContents.send(
+        IPC.QUEUE.USER_STATISTICS.UPDATE,
+        this.userStatistics
+      );
+    }
+  }
 
-    this.userStatistics.set(
-      chatMsg.username,
-      (this.userStatistics.get(chatMsg.username) || 0) + 1
-    );
-    this.window.webContents.send(
-      IPC.QUEUE.USER_STATISTICS.UPDATE,
-      this.userStatistics
-    );
+  // Retrieve the next message from the queue
+  dequeue(): ChatMessage | undefined {
+    const chatMsg = this.messages.shift();
+    if (!chatMsg) return;
+    return chatMsg;
   }
 
   // Get all messages from a specific user
@@ -54,7 +52,7 @@ export class CommandQueue implements IQueue {
     this.messages.filter((msg) => msg.username === username);
 
   // Clear all messages from the queue
-  clear(stats = false): void {
+  clear(stats: boolean = false): void {
     this.messages = [];
 
     if (stats) {

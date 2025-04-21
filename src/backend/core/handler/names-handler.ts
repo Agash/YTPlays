@@ -1,7 +1,7 @@
 import { BrowserWindow } from "electron";
 import { GameplayHandlerConfig, IGameplayHandler } from "./gameplay-handler";
 import { ChatMessage } from "../../../shared/types";
-import { PkmnQueue } from "../queue/pkmn-queue";
+import { PokemonNamesQueue } from "../queue/pokemon-names-queue";
 import { IPC } from "../../../shared/ipc-commands";
 import { typeName } from "../utils";
 
@@ -9,14 +9,14 @@ export class NamesHandler implements IGameplayHandler {
   window: BrowserWindow;
   config: GameplayHandlerConfig;
   timer: NodeJS.Timeout;
-  queue: PkmnQueue;
+  queue: PokemonNamesQueue;
   userActivity: Record<string, number> = {}; // Track user activity
 
   constructor(config: GameplayHandlerConfig, window: BrowserWindow) {
     this.config = config;
     this.window = window;
     this.timer = setInterval(() => this.handleMessages(), config.timeOutInMs);
-    this.queue = new PkmnQueue(window);
+    this.queue = new PokemonNamesQueue(window);
   }
 
   handleChatMessage = (message: ChatMessage) => {

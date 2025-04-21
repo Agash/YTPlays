@@ -1,6 +1,6 @@
 type QueueStatistics = Map<string, number>;
 
-type Mode = "democracy" | "monarchy" | "anarchy" | "names";
+type Mode = "democracy" | "monarchy" | "anarchy" | "names" | "showdown";
 type ButtonPreset = "normal" | "pokerogue" | "custom";
 
 interface ChatMessage {

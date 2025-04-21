@@ -5,6 +5,8 @@ export const IPC = {
     GET_CONFIG: "get-config",
     START: "start-run",
     STOP: "stop-run",
+    OPEN_SHOWDOWN: "open-showdown",
+    CLOSE_SHOWDOWN: "close-showdown",
   },
   QUEUE: {
     COMMAND_STATISTICS: {

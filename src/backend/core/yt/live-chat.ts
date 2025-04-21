@@ -12,13 +12,14 @@ import YTChat, {
 import { modCommands } from "../../../shared/constants";
 import { IPC } from "../../../shared/ipc-commands";
 import { ChatMessage, Mode } from "../../../shared/types";
-import { AnarchyHandler } from "../handler/anarchy-handler";
-import { DemocracyHandler } from "../handler/democracy-handler";
+import { AnarchyHandler } from "../handler/keyboard/anarchy-handler";
+import { DemocracyHandler } from "../handler/keyboard/democracy-handler";
 import { IGameplayHandler } from "../handler/gameplay-handler";
-import { MonarchyHandler } from "../handler/monarchy-handler";
+import { MonarchyHandler } from "../handler/keyboard/monarchy-handler";
 import { NamesHandler } from "../handler/names-handler";
 import { StoreType } from "../typing";
 import { tapKey } from "../utils";
+import { ShowdownHandler } from "../handler/showdown-handler";
 
 export class LiveChat {
   streamer: string;
@@ -29,7 +30,7 @@ export class LiveChat {
   mainWindow: BrowserWindow;
   bannedUsers: Set<string> = new Set();
 
-  async start(mainWindow: BrowserWindow, config: StoreType) {
+  async start(mainWindow: BrowserWindow, config: StoreType, showdownWindow?: BrowserWindow) {
     this.mainWindow = mainWindow;
     this.config = config;
 
@@ -41,7 +42,7 @@ export class LiveChat {
     const info = await yt.getInfo(this.config.video.id);
 
     this.liveChat = info.getLiveChat();
-    this.attachHandler(this.config.settings.mode);
+    this.attachHandler(this.config.settings.mode, showdownWindow);
 
     this.liveChat.once("start", (_) => {
       // Get all chat, not just TOP
@@ -72,7 +73,7 @@ export class LiveChat {
      */
     console.info("[YTPlays] Started LiveChat", initial_data);
 
-    var owner = initial_data.participants_list.participants.find(p => p.badges.find(b => b.hasKey("icon_type") && b.icon_type == "OWNER"));
+    var owner = initial_data.participants_list?.participants.find(p => p.badges.find(b => b.hasKey("icon_type") && b.icon_type == "OWNER"));
     if (owner) {
       this.streamer = owner.name.toString();
     }
@@ -247,7 +248,7 @@ export class LiveChat {
       case modCommands.press: {
         if (commandArgs.length > 0) {
           tapKey(commandArgs[0], this.config.settings.buttonPreset);
-    
+
           // handle subsequent commands
           for (let i = 1; i < commandArgs.length; i++) {
             setTimeout(() => {
@@ -260,7 +261,7 @@ export class LiveChat {
     }
   }
 
-  private attachHandler(mode: Mode): void {
+  private attachHandler(mode: Mode, showdownWindow?: BrowserWindow): void {
     switch (mode) {
       case "democracy":
         this.handler = new DemocracyHandler(
@@ -273,34 +274,31 @@ export class LiveChat {
         );
         break;
       case "monarchy":
-        this.handler = new MonarchyHandler(
-          {
-            timeOutInMs: this.config.settings.normalInterval,
-            monarchTimerInMs: this.config.settings.monarchyCooldown,
-            monarchThreshold: this.config.settings.monarchyThreshold,
-            inactivityTimerInMs: this.config.settings.inactivityTimerInMs,
-            buttonPreset: this.config.settings.buttonPreset,
-          },
-          this.mainWindow
-        );
+        this.handler = new MonarchyHandler({
+          timeOutInMs: this.config.settings.normalInterval,
+          monarchTimerInMs: this.config.settings.monarchyCooldown,
+          monarchThreshold: this.config.settings.monarchyThreshold,
+          inactivityTimerInMs: this.config.settings.inactivityTimerInMs,
+          buttonPreset: this.config.settings.buttonPreset,
+        }, this.mainWindow);
         break;
       case "anarchy":
-        this.handler = new AnarchyHandler(
-          {
-            timeOutInMs: this.config.settings.normalInterval,
-            streamDelay: this.config.settings.streamDelay,
-            buttonPreset: this.config.settings.buttonPreset,
-          },
-          this.mainWindow
-        );
+        this.handler = new AnarchyHandler({
+          timeOutInMs: this.config.settings.normalInterval,
+          streamDelay: this.config.settings.streamDelay,
+          buttonPreset: this.config.settings.buttonPreset,
+        }, this.mainWindow);
         break;
       case "names":
-        this.handler = new NamesHandler(
-          {
-            timeOutInMs: this.config.settings.normalInterval,
-          },
-          this.mainWindow
-        );
+        this.handler = new NamesHandler({
+          timeOutInMs: this.config.settings.normalInterval,
+        }, this.mainWindow);
+        break;
+      case "showdown":
+        this.handler = new ShowdownHandler({
+          timeOutInMs: this.config.settings.normalInterval,
+        }, this.mainWindow, showdownWindow);
+        break;
     }
   }
 }

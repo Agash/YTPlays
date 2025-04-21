@@ -1,9 +1,9 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, session } from "electron";
 import Store from "electron-store";
-// import installExtension, {
-//   REACT_DEVELOPER_TOOLS,
-//   REDUX_DEVTOOLS,
-// } from "electron-devtools-installer";
+import installExtension, {
+  REACT_DEVELOPER_TOOLS,
+  REDUX_DEVTOOLS,
+} from "electron-devtools-installer";
 import { updateElectronApp } from "update-electron-app";
 import { StoreType } from "./backend/core/typing";
 import { LiveChat } from "./backend/core/yt/live-chat";
@@ -53,7 +53,7 @@ const store = new Store<StoreType>({
       properties: {
         mode: {
           type: "string",
-          enum: ["democracy", "monarchy", "anarchy", "names"],
+          enum: ["democracy", "monarchy", "anarchy", "names", "showdown"],
           default: "democracy",
         },
         buttonPreset: {
@@ -93,7 +93,7 @@ const store = new Store<StoreType>({
 
 const chat = new LiveChat();
 
-const createWindow = (): BrowserWindow => {
+const createMainWindow = (): BrowserWindow => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     height: 600,
@@ -113,11 +113,30 @@ const createWindow = (): BrowserWindow => {
   return mainWindow;
 };
 
+const createShowdownWindow = (): BrowserWindow => {
+  const showdownWindow = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    webPreferences: {
+      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+    },
+    autoHideMenuBar: true,
+  });
+
+  showdownWindow.loadURL('https://play.pokemonshowdown.com');
+  
+  // Open the DevTools.
+  if (!app.isPackaged) showdownWindow.webContents.openDevTools();
+
+  return showdownWindow;
+};
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
-  const mainWindow = createWindow();
+  const mainWindow = createMainWindow();
+  let showdownWindow: BrowserWindow | null = null;
 
   ipcMain.on(IPC.MAIN.GET_CONFIG, (_) => {
     const data = {
@@ -136,11 +155,28 @@ app.on("ready", async () => {
   });
 
   ipcMain.on(IPC.MAIN.START, async (_) => {
-    await chat.start(mainWindow, store.store);
+    await chat.start(mainWindow, store.store, showdownWindow);
   });
 
   ipcMain.on(IPC.MAIN.STOP, (_) => {
     chat.stop();
+  });
+
+  ipcMain.on(IPC.MAIN.OPEN_SHOWDOWN, () => {
+    if(!showdownWindow?.isFocusable()){
+      showdownWindow = createShowdownWindow();
+    }
+  });
+
+  ipcMain.on(IPC.MAIN.CLOSE_SHOWDOWN, () => {
+    if(!showdownWindow || !showdownWindow.isClosable()) return;
+
+    try {
+      showdownWindow.close();
+      showdownWindow = null;
+    } catch (e) {
+      console.error(e);
+    }
   });
 
   ipcMain.on(
@@ -189,12 +225,14 @@ app.on("activate", () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
+    createMainWindow();
   }
 });
 
-// app.whenReady().then(() => {
-//   installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS])
-//     .then((name) => console.log(`[YTPlays] Added Extension:  ${name}`))
-//     .catch((err) => console.log("[YTPlays] An error occurred: ", err));
-// });
+if (!app.isPackaged) {
+  app.whenReady().then(() => {
+    installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS])
+      .then((name) => console.log(`[YTPlays] Added Extension:  ${name}`))
+      .catch((err) => console.log("[YTPlays] An error occurred: ", err));
+  });
+}

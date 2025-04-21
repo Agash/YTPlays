@@ -1,16 +1,16 @@
-import { IGameplayHandler, GameplayHandlerConfig } from "./gameplay-handler";
-import { CommandQueue } from "../queue/command-queue";
-import { ButtonPreset, ChatMessage } from "../../../shared/types";
-import { tapKey } from "../utils";
+import { IGameplayHandler, GameplayHandlerConfig } from "../gameplay-handler";
+import { KeyboardCommandQueue } from "../../queue/keyboard-command-queue";
+import { ButtonPreset, ChatMessage } from "../../../../shared/types";
+import { tapKey } from "../../utils";
 import { BrowserWindow } from "electron";
-import { IPC } from "../../../shared/ipc-commands";
+import { IPC } from "../../../../shared/ipc-commands";
 
 export class MonarchyHandler implements IGameplayHandler {
   window: BrowserWindow;
   config: MonarchyHandlerConfig;
   msgTimer: NodeJS.Timeout;
   monarchTimer: NodeJS.Timeout;
-  queue: CommandQueue;
+  queue: KeyboardCommandQueue;
   currentMonarch: string | undefined;
 
   lastExecuted: ChatMessage;
@@ -26,7 +26,7 @@ export class MonarchyHandler implements IGameplayHandler {
       () => this.changeMonarch(),
       config.monarchTimerInMs
     );
-    this.queue = new CommandQueue(window, config.buttonPreset);
+    this.queue = new KeyboardCommandQueue(window, config.buttonPreset);
   }
 
   exit(): void {

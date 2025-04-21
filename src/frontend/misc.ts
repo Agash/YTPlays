@@ -29,6 +29,7 @@ function initializeStore() {
   window.mainAPI.onConfig((config) => {
     dispatch(setConfig(config));
   });
+  
   window.mainAPI.getConfig();
 }
 

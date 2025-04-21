@@ -2,10 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../hooks/storeHooks";
 import { ButtonPreset, Mode } from "../../shared/types";
 import { FormikErrors, useFormik } from "formik";
+import { useState, useEffect } from "react";
 
 const ConfigPage = () => {
   const navigate = useNavigate();
   const config = useAppSelector((state) => state.config);
+  const [mode, setMode] = useState(config.mode);
   const form = useFormik({
     enableReinitialize: true,
     initialValues: config,
@@ -30,6 +32,15 @@ const ConfigPage = () => {
     },
   });
 
+  useEffect(() => {
+    if(form.values.mode === "showdown")
+      window.mainAPI.openShowdownWindow();
+    else
+      window.mainAPI.closeShowdownWindow();
+
+    setMode(form.values.mode);
+  }, [form.values.mode]);
+
   const setConfig = (config: {
     videoId: string;
     mode: Mode;
@@ -43,22 +54,6 @@ const ConfigPage = () => {
   }) => {
     window.mainAPI.setConfig(config);
   };
-
-  // useEffect(() => {
-  //   console.log("setup listener for config");
-
-  //   const removeEventListener = window.mainAPI.onConfig((data: ConfigState) => {
-  //     console.log("received config", data);
-  //     form.setValues(data);
-  //   });
-
-  //   console.log("requesting config");
-  //   window.mainAPI.getConfig();
-
-  //   return () => {
-  //     removeEventListener();
-  //   };
-  // }, []);
 
   const startAndForward = () => {
     window.mainAPI.startRun();
@@ -94,9 +89,7 @@ const ConfigPage = () => {
           <input
             type="text"
             name="videoId"
-            onChange={form.handleChange}
-            onBlur={form.handleBlur}
-            value={form.values.videoId}
+            {...form.getFieldProps("videoId")}
             placeholder="lMmToBb2nKg"
             className={
               form.errors.videoId && form.touched.videoId
@@ -128,9 +121,11 @@ const ConfigPage = () => {
         <select
           title="mode"
           name="mode"
-          onChange={form.handleChange}
-          onBlur={form.handleBlur}
-          value={form.values.mode}
+          {...form.getFieldProps("mode")}
+          onChange={(e) => {
+            form.handleChange(e);
+            setMode(e.target.value as Mode);
+          }}
           className={
             form.errors.mode && form.touched.mode
               ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500"
@@ -141,6 +136,7 @@ const ConfigPage = () => {
           <option value="monarchy">Monarchy</option>
           <option value="anarchy">Anarchy</option>
           <option value="names">Names</option>
+          <option value="showdown">Pokemon Showdown</option>
         </select>
         {form.errors.mode && form.touched.mode && (
           <div className="mt-2 text-sm text-red-600 dark:text-red-500">
@@ -149,180 +145,175 @@ const ConfigPage = () => {
         )}
       </div>
 
-      <div className="mb-5">
-        <label
-          htmlFor="buttonPreset"
-          className={
-            "block mb-2 text-sm font-medium" +
-            (form.errors.buttonPreset && form.touched.buttonPreset
-              ? "text-red-700 dark:text-red-500"
-              : "text-gray-900 dark:text-white")
-          }
-        >
-          Button Preset
-        </label>
-        <select
-          title="buttonPreset"
-          name="buttonPreset"
-          onChange={form.handleChange}
-          onBlur={form.handleBlur}
-          value={form.values.buttonPreset}
-          className={
-            form.errors.buttonPreset && form.touched.buttonPreset
-              ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500"
-              : "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          }
-        >
-          <option value="normal">Normal</option>
-          <option value="pokerogue">
-            PokeRogue ([A = z | B = x] without start)
-          </option>
-        </select>
-        {form.errors.buttonPreset && form.touched.buttonPreset && (
-          <div className="mt-2 text-sm text-red-600 dark:text-red-500">
-            {form.errors.buttonPreset}
-          </div>
-        )}
-      </div>
-
-      <div className="mb-5">
-        <label
-          htmlFor="democracyCountdown"
-          className={
-            "block mb-2 text-sm font-medium" +
-            (form.errors.democracyCountdown && form.touched.democracyCountdown
-              ? "text-red-700 dark:text-red-500"
-              : "text-gray-900 dark:text-white")
-          }
-        >
-          Democracy Countdown&nbsp;
-          <small>(in Milliseconds)</small>
-        </label>
-        <input
-          title="democracyCountdown"
-          type="number"
-          name="democracyCountdown"
-          onChange={form.handleChange}
-          onBlur={form.handleBlur}
-          value={form.values.democracyCountdown}
-          className={
-            form.errors.democracyCountdown && form.touched.democracyCountdown
-              ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500"
-              : "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          }
-        />
-        {form.errors.democracyCountdown && form.touched.democracyCountdown && (
-          <div className="mt-2 text-sm text-red-600 dark:text-red-500">
-            {form.errors.democracyCountdown}
-          </div>
-        )}
-      </div>
-
-      <div className="mb-5">
-        <label
-          htmlFor="monarchyCooldown"
-          className={
-            "block mb-2 text-sm font-medium" +
-            (form.errors.monarchyCooldown && form.touched.monarchyCooldown
-              ? "text-red-700 dark:text-red-500"
-              : "text-gray-900 dark:text-white")
-          }
-        >
-          Monarchy Cooldown&nbsp;
-          <small>(in Milliseconds)</small>
-        </label>
-        <input
-          title="monarchyCooldown"
-          type="number"
-          name="monarchyCooldown"
-          onChange={form.handleChange}
-          onBlur={form.handleBlur}
-          value={form.values.monarchyCooldown}
-          className={
-            form.errors.monarchyCooldown && form.touched.monarchyCooldown
-              ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500"
-              : "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          }
-        />
-        {form.errors.monarchyCooldown && form.touched.monarchyCooldown && (
-          <div className="mt-2 text-sm text-red-600 dark:text-red-500">
-            {form.errors.monarchyCooldown}
-          </div>
-        )}
-      </div>
-
-      <div className="mb-5">
-        <label
-          htmlFor="monarchyThreshold"
-          className={
-            "block mb-2 text-sm font-medium" +
-            (form.errors.monarchyThreshold && form.touched.monarchyThreshold
-              ? "text-red-700 dark:text-red-500"
-              : "text-gray-900 dark:text-white")
-          }
-        >
-          Monarchy Threshold&nbsp;
-          <small>
-            (# of messages needed for eligible users since last Monarch)
-          </small>
-        </label>
-        <input
-          title="monarchyThreshold"
-          type="number"
-          name="monarchyThreshold"
-          onChange={form.handleChange}
-          onBlur={form.handleBlur}
-          value={form.values.monarchyThreshold}
-          className={
-            form.errors.monarchyThreshold && form.touched.monarchyThreshold
-              ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500"
-              : "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          }
-        />
-        {form.errors.monarchyThreshold && form.touched.monarchyThreshold && (
-          <div className="mt-2 text-sm text-red-600 dark:text-red-500">
-            {form.errors.monarchyThreshold}
-          </div>
-        )}
-      </div>
-
-      <div className="mb-5">
-        <label
-          htmlFor="inactivityTimerInMs"
-          className={
-            "block mb-2 text-sm font-medium" +
-            (form.errors.inactivityTimerInMs && form.touched.inactivityTimerInMs
-              ? "text-red-700 dark:text-red-500"
-              : "text-gray-900 dark:text-white")
-          }
-        >
-          Inactivity Timer In Ms&nbsp;
-          <small>
-            (amount of inactivity since choosing new monarch where we'll wait
-            for activity [or a new monarch will be chosen])
-          </small>
-        </label>
-        <input
-          title="inactivityTimerInMs"
-          type="number"
-          name="inactivityTimerInMs"
-          onChange={form.handleChange}
-          onBlur={form.handleBlur}
-          value={form.values.inactivityTimerInMs}
-          className={
-            form.errors.inactivityTimerInMs && form.touched.inactivityTimerInMs
-              ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500"
-              : "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          }
-        />
-        {form.errors.inactivityTimerInMs &&
-          form.touched.inactivityTimerInMs && (
+      {!["names", "showdown"].includes(mode) && (
+        <div className="mb-5">
+          <label
+            htmlFor="buttonPreset"
+            className={
+              "block mb-2 text-sm font-medium" +
+              (form.errors.buttonPreset && form.touched.buttonPreset
+                ? "text-red-700 dark:text-red-500"
+                : "text-gray-900 dark:text-white")
+            }
+          >
+            Button Preset
+          </label>
+          <select
+            title="buttonPreset"
+            name="buttonPreset"
+            {...form.getFieldProps("buttonPreset")}
+            className={
+              form.errors.buttonPreset && form.touched.buttonPreset
+                ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500"
+                : "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            }
+          >
+            <option value="normal">Normal</option>
+            <option value="pokerogue">
+              PokeRogue ([A = z | B = x] without start)
+            </option>
+          </select>
+          {form.errors.buttonPreset && form.touched.buttonPreset && (
             <div className="mt-2 text-sm text-red-600 dark:text-red-500">
-              {form.errors.inactivityTimerInMs}
+              {form.errors.buttonPreset}
             </div>
           )}
-      </div>
+        </div>
+      )}
 
+      {["democracy", "showdown"].includes(mode) && (
+        <div className="mb-5">
+          <label
+            htmlFor="democracyCountdown"
+            className={
+              "block mb-2 text-sm font-medium" +
+              (form.errors.democracyCountdown && form.touched.democracyCountdown
+                ? "text-red-700 dark:text-red-500"
+                : "text-gray-900 dark:text-white")
+            }
+          >
+            Democracy Countdown&nbsp;
+            <small>(in Milliseconds)</small>
+          </label>
+          <input
+            title="democracyCountdown"
+            type="number"
+            name="democracyCountdown"
+            {...form.getFieldProps("democracyCountdown")}
+            className={
+              form.errors.democracyCountdown && form.touched.democracyCountdown
+                ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500"
+                : "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            }
+          />
+          {form.errors.democracyCountdown && form.touched.democracyCountdown && (
+            <div className="mt-2 text-sm text-red-600 dark:text-red-500">
+              {form.errors.democracyCountdown}
+            </div>
+          )}
+        </div>
+      )}
+
+      {mode === "monarchy" && (
+        <>
+          <div className="mb-5">
+            <label
+              htmlFor="monarchyCooldown"
+              className={
+                "block mb-2 text-sm font-medium" +
+                (form.errors.monarchyCooldown && form.touched.monarchyCooldown
+                  ? "text-red-700 dark:text-red-500"
+                  : "text-gray-900 dark:text-white")
+              }
+            >
+              Monarchy Cooldown&nbsp;
+              <small>(in Milliseconds)</small>
+            </label>
+            <input
+              title="monarchyCooldown"
+              type="number"
+              name="monarchyCooldown"
+              {...form.getFieldProps("monarchyCooldown")}
+              className={
+                form.errors.monarchyCooldown && form.touched.monarchyCooldown
+                  ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500"
+                  : "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              }
+            />
+            {form.errors.monarchyCooldown && form.touched.monarchyCooldown && (
+              <div className="mt-2 text-sm text-red-600 dark:text-red-500">
+                {form.errors.monarchyCooldown}
+              </div>
+            )}
+          </div>
+          <div className="mb-5">
+            <label
+              htmlFor="monarchyThreshold"
+              className={
+                "block mb-2 text-sm font-medium" +
+                (form.errors.monarchyThreshold && form.touched.monarchyThreshold
+                  ? "text-red-700 dark:text-red-500"
+                  : "text-gray-900 dark:text-white")
+              }
+            >
+              Monarchy Threshold&nbsp;
+              <small>
+                (# of messages needed for eligible users since last Monarch)
+              </small>
+            </label>
+            <input
+              title="monarchyThreshold"
+              type="number"
+              name="monarchyThreshold"
+              {...form.getFieldProps("monarchyThreshold")}
+              className={
+                form.errors.monarchyThreshold && form.touched.monarchyThreshold
+                  ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500"
+                  : "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              }
+            />
+            {form.errors.monarchyThreshold && form.touched.monarchyThreshold && (
+              <div className="mt-2 text-sm text-red-600 dark:text-red-500">
+                {form.errors.monarchyThreshold}
+              </div>
+            )}
+          </div>
+          <div className="mb-5">
+            <label
+              htmlFor="inactivityTimerInMs"
+              className={
+                "block mb-2 text-sm font-medium" +
+                (form.errors.inactivityTimerInMs && form.touched.inactivityTimerInMs
+                  ? "text-red-700 dark:text-red-500"
+                  : "text-gray-900 dark:text-white")
+              }
+            >
+              Inactivity Timer In Ms&nbsp;
+              <small>
+                (amount of inactivity since choosing new monarch where we'll wait
+                for activity [or a new monarch will be chosen])
+              </small>
+            </label>
+            <input
+              title="inactivityTimerInMs"
+              type="number"
+              name="inactivityTimerInMs"
+              {...form.getFieldProps("inactivityTimerInMs")}
+              className={
+                form.errors.inactivityTimerInMs && form.touched.inactivityTimerInMs
+                  ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500"
+                  : "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              }
+            />
+            {form.errors.inactivityTimerInMs &&
+              form.touched.inactivityTimerInMs && (
+                <div className="mt-2 text-sm text-red-600 dark:text-red-500">
+                  {form.errors.inactivityTimerInMs}
+                </div>
+              )}
+          </div>
+        </>
+      )}
       <div className="mb-5">
         <label
           htmlFor="normalInterval"
@@ -340,9 +331,7 @@ const ConfigPage = () => {
           title="normalInterval"
           type="number"
           name="normalInterval"
-          onChange={form.handleChange}
-          onBlur={form.handleBlur}
-          value={form.values.normalInterval}
+          {...form.getFieldProps("normalInterval")}
           className={
             form.errors.normalInterval && form.touched.normalInterval
               ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500"
@@ -378,9 +367,7 @@ const ConfigPage = () => {
           title="streamDelay"
           type="number"
           name="streamDelay"
-          onChange={form.handleChange}
-          onBlur={form.handleBlur}
-          value={form.values.streamDelay}
+          {...form.getFieldProps("streamDelay")}
           className={
             form.errors.streamDelay && form.touched.streamDelay
               ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500"
@@ -393,6 +380,7 @@ const ConfigPage = () => {
           </div>
         )}
       </div>
+
       <button
         type="submit"
         disabled={form.isSubmitting}

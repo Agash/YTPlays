@@ -31,8 +31,8 @@ const RunPage = ({ displayInfobox = true }: RunPageProps) => {
   };
 
   const stopAndBack = () => {
-    window.mainAPI.stopRun();
-    navigate("/");
+      window.mainAPI.stopRun();
+      navigate("/");
   };
 
   if (displayInfobox)

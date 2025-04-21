@@ -1,15 +1,15 @@
-import { IGameplayHandler, GameplayHandlerConfig } from "./gameplay-handler";
-import { CommandQueue } from "../queue/command-queue";
-import { ButtonPreset, ChatMessage } from "../../../shared/types";
-import { tapKey } from "../utils";
+import { IGameplayHandler, GameplayHandlerConfig } from "../gameplay-handler";
+import { KeyboardCommandQueue } from "../../queue/keyboard-command-queue";
+import { ButtonPreset, ChatMessage } from "../../../../shared/types";
+import { tapKey } from "../../utils";
 import { BrowserWindow } from "electron";
-import { IPC } from "../../../shared/ipc-commands";
+import { IPC } from "../../../../shared/ipc-commands";
 
 export class DemocracyHandler implements IGameplayHandler {
   window: BrowserWindow;
   config: DemocracyHandlerConfig;
   timer: NodeJS.Timeout;
-  queue: CommandQueue;
+  queue: KeyboardCommandQueue;
 
   acceptMessages = true;
 
@@ -20,7 +20,7 @@ export class DemocracyHandler implements IGameplayHandler {
       () => this.handleMessages(),
       config.timeOutInMs + config.streamDelay
     );
-    this.queue = new CommandQueue(window, config.buttonPreset);
+    this.queue = new KeyboardCommandQueue(window, config.buttonPreset);
   }
 
   handleChatMessage = (message: ChatMessage) => {
